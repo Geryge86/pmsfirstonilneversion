@@ -2268,6 +2268,75 @@ body{min-height:100dvh}
 }
 .notes-reader-body p,#kisokos-reader-body p,.school-reader-body p{margin:.45em 0 .9em}
 
+
+/* PMS v2.0 BETA6a · iPhone notch/status-bar + Edzéstár reader hotfix */
+html{
+  background:#08111d !important;
+  min-height:100%;
+}
+body{
+  min-height:100dvh;
+  background:var(--bg);
+}
+body.dashboard-active{
+  background:#08111d !important;
+}
+body.dashboard-active #app,
+body.dashboard-active #tab-dashboard,
+body.dashboard-active #dash2-shell{
+  background-color:#08111d !important;
+}
+body.dashboard-active #dash2-shell{
+  min-height:100dvh;
+  padding-top:env(safe-area-inset-top);
+}
+body.dashboard-active #dash-scroll{
+  padding-top:14px;
+}
+@media (display-mode:standalone){
+  html,body.dashboard-active,#app{
+    background:#08111d !important;
+  }
+}
+
+/* Edzéstár: a vezérlősáv mindig látható legyen a notch alatt */
+.edzestar-viewer{
+  background:var(--bg);
+  padding-top:env(safe-area-inset-top);
+}
+.edzestar-viewer-top{
+  flex:0 0 58px;
+  height:58px;
+  min-height:58px;
+  position:relative;
+  z-index:20;
+  background:#14253d !important;
+  border-bottom:3px solid #6B0E1E;
+  box-shadow:0 4px 14px rgba(0,0,0,.12);
+}
+.edzestar-view-back,
+.edzestar-view-edit{
+  color:#fff !important;
+  min-height:44px;
+  display:flex;
+  align-items:center;
+}
+.edzestar-view-edit{justify-content:flex-end}
+.edzestar-view-top-title{color:rgba(255,255,255,.72) !important}
+@media(max-width:600px){
+  .edzestar-viewer-top{
+    flex-basis:56px;
+    height:56px;
+    min-height:56px;
+  }
+  .edzestar-view-back{
+    font-size:13px;
+    font-weight:900;
+  }
+  .edzestar-view-scroll{padding-top:0}
+  .edzestar-view-sheet{min-height:calc(100dvh - 56px - env(safe-area-inset-top))}
+}
+
 </style>
 </head>
 <body>
@@ -4188,7 +4257,7 @@ body{min-height:100dvh}
 <!-- Edzéstár – teljes képernyős olvasó -->
 <div id="edzestar-viewer" class="edzestar-viewer hidden" aria-hidden="true">
   <div class="edzestar-viewer-top">
-    <button type="button" id="edzestar-view-back" class="edzestar-view-back">← Vissza</button>
+    <button type="button" id="edzestar-view-back" class="edzestar-view-back">← Edzéstár</button>
     <div class="edzestar-view-top-title">EDZÉSTÁR</div>
     <button type="button" id="edzestar-view-edit" class="edzestar-view-edit">✏️ Szerkesztés</button>
   </div>
@@ -4995,7 +5064,7 @@ Clean & Press – 5-5×
     var d = new Date();
     return d.getFullYear() + '. ' + HU_MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getDate() + '., ' + HU_DAYS_FULL[d.getDay()];
   }
-  var APP_BUILD = 'PMS-2.0-beta6-pwa-uiux-editor-batch';
+  var APP_BUILD = 'PMS-2.0-beta6a-iphone-notch-edzestar-fix';
   var USER_NAME_KEY = 'gery_user_name_v1';
   var userName = 'Felhasználó';
   function cleanUserName(v){ v=String(v||'').trim().replace(/\s+/g,' '); return v.slice(0,32) || 'Felhasználó'; }
