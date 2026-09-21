@@ -3851,7 +3851,7 @@ body.dashboard-light #dash-calendar-reminders .dash-cal-reminder button{backgrou
             </div>
 
             <div class="kk-fixed-entry-form">
-              <label class="wide"><span>Kiadás neve</span><input id="kk-fixed-entry-name" placeholder="pl. Villany, lakbér, Netflix..."></label>
+              <label class="wide"><span>Kiadás neve</span><input id="kk-fixed-entry-name" placeholder="pl. Villany, lakbér, előfizetés..."></label>
               <label><span>Összeg</span><input id="kk-fixed-entry-amount" type="number" min="0" step="100" inputmode="numeric" placeholder="pl. 18400"></label>
               <label><span>Kategória</span>
                 <select id="kk-fixed-entry-cat">
@@ -5212,7 +5212,7 @@ Clean & Press – 5-5×
         <button type="button" class="caleditor-type-btn" data-type="kiadas">Fix kiadás</button>
         <button type="button" class="caleditor-type-btn" data-type="megtakaritas">Rendszeres megtakarítás</button>
       </div>
-      <div class="felmero-row"><label>Név</label><input type="text" id="fin-fix-name" placeholder="pl. Netflix"></div>
+      <div class="felmero-row"><label>Név</label><input type="text" id="fin-fix-name" placeholder="pl. Előfizetés"></div>
       <div class="felmero-row"><label>Kategória</label><input type="text" id="fin-fix-category" placeholder="pl. Streaming"></div>
       <div class="felmero-row"><label>Jelenlegi összeg (Ft)</label><input type="number" id="fin-fix-amount" inputmode="numeric" min="0" step="100"></div>
       <div class="felmero-row"><label>Érvényes ettől</label><input type="date" id="fin-fix-from"></div>
@@ -5272,7 +5272,7 @@ Clean & Press – 5-5×
       <button type="button" id="fin-loan-btn-save" class="btn-text btn-text-primary">Mentés</button>
     </div>
     <div class="tervezo-form-scroll">
-      <div class="felmero-row"><label>Név</label><input type="text" id="fin-loan-name" placeholder="pl. Babaváró törlesztő"></div>
+      <div class="felmero-row"><label>Név</label><input type="text" id="fin-loan-name" placeholder="pl. Havi törlesztő"></div>
       <div class="felmero-row"><label>Havi törlesztő (Ft)</label><input type="number" id="fin-loan-amount" inputmode="numeric" min="0" step="1000"></div>
       <div class="felmero-row"><label>Fizetési nap (opcionális, 1-31)</label><input type="number" id="fin-loan-payday" inputmode="numeric" min="1" max="31"></div>
       <div class="felmero-row"><label>Kezdő dátum</label><input type="date" id="fin-loan-start"></div>
@@ -5486,7 +5486,7 @@ Clean & Press – 5-5×
   var finTransactions = [];
   var finRecurring = [];
   var finLoans = [];
-  var finSettings = { seeded: false };
+  var finSettings = { seeded: true };
   var finViewYear, finViewMonth;
   var finYearViewYear;
   var editingFinTxId = null;
@@ -5573,7 +5573,7 @@ Clean & Press – 5-5×
     var d = new Date();
     return d.getFullYear() + '. ' + HU_MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getDate() + '., ' + HU_DAYS_FULL[d.getDay()];
   }
-  var APP_BUILD = 'PMS-2.0-beta7i-etrend-favorites-load-fix';
+  var APP_BUILD = 'PMS-2.0-beta7j-finance-privacy-hotfix';
   var USER_NAME_KEY = 'gery_user_name_v1';
   var userName = 'Felhasználó';
   function cleanUserName(v){ v=String(v||'').trim().replace(/\s+/g,' '); return v.slice(0,32) || 'Felhasználó'; }
@@ -5732,9 +5732,9 @@ Clean & Press – 5-5×
     } catch (e) { favorites = []; }
     try {
       var rfs = localStorage.getItem(FIN_SETTINGS_KEY);
-      finSettings = rfs ? JSON.parse(rfs) : { seeded: false };
-      if (!finSettings || typeof finSettings !== 'object') finSettings = { seeded: false };
-    } catch (e) { finSettings = { seeded: false }; }
+      finSettings = rfs ? JSON.parse(rfs) : { seeded: true };
+      if (!finSettings || typeof finSettings !== 'object') finSettings = { seeded: true };
+    } catch (e) { finSettings = { seeded: true }; }
     try { var rft = localStorage.getItem(FIN_TX_KEY); finTransactions = rft ? JSON.parse(rft) : []; if (!Array.isArray(finTransactions)) finTransactions = []; } catch (e) { finTransactions = []; }
     try { var rfr = localStorage.getItem(FIN_RECURRING_KEY); finRecurring = rfr ? JSON.parse(rfr) : []; if (!Array.isArray(finRecurring)) finRecurring = []; } catch (e) { finRecurring = []; }
     try { var rfl = localStorage.getItem(FIN_LOANS_KEY); finLoans = rfl ? JSON.parse(rfl) : []; if (!Array.isArray(finLoans)) finLoans = []; } catch (e) { finLoans = []; }
@@ -5751,11 +5751,7 @@ Clean & Press – 5-5×
       deepWorkSound.enabled = deepWorkSound.enabled !== false;
       if (['bell','double','gong'].indexOf(deepWorkSound.tone) === -1) deepWorkSound.tone = 'double';
     } catch (e) { deepWorkSound = { enabled:true, tone:'double' }; }
-    if (!finSettings.seeded) {
-      seedFinanceData();
-      finSettings.seeded = true;
-      saveFinSettings(); saveFinTransactions(); saveFinRecurring(); saveFinLoans();
-    }
+    // BETA7j privacy hotfix: fresh installs never seed finance data.
   }
   function saveNotes() { try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); markDataChanged(); } catch (e) { alert('Nem sikerult menteni.'); } }
   function saveWorkdays() { try { localStorage.setItem(WORKDAYS_KEY, JSON.stringify(workdays)); markDataChanged(); } catch (e) {} }
@@ -12974,24 +12970,7 @@ function renderDashboard() {
     return div;
   }
 
-  function seedFinanceData() {
-    var fixDefs = [
-      ['Disney+', 'Streaming', 2499], ['YouTube Premium', 'Streaming', 4790], ['SkyShowtime', 'Streaming', 1999],
-      ['RTL+', 'Streaming', 3490], ['Netflix', 'Streaming', 5180], ['HBO Max', 'Streaming', 3490],
-      ['Amazon Prime', 'Streaming', 1990], ['AI (Gemini/ChatGPT)', 'Digitális szolgáltatás', 9000],
-      ['Apple tárhely', 'Digitális szolgáltatás', 1290], ['F1 modell', 'Részlet', 11000],
-      ['Telekom részlet', 'Részlet', 15000], ['Telekom számla', 'Telefon', 44000], ['Yettel számla', 'Telefon', 1600],
-      ['MVM (villany)', 'Rezsi', 20000], ['Szemétdíj', 'Rezsi', 5000], ['Lakásszövetkezet', 'Lakhatás', 9075]
-    ];
-    fixDefs.forEach(function (d) {
-      finRecurring.push({ id: uid('fr'), name: d[0], category: d[1], type: 'kiadas', frequency: 'havi', paymentDay: null, note: '', priceHistory: [{ amount: d[2], from: '2026-01-01' }], endDate: null });
-    });
-    var savingsDefs = [['OTP Optima', 'Megtakarítás', 20000], ['Egészségpénztár', 'Megtakarítás', 5000], ['OTP MNYP (nyugdíj)', 'Megtakarítás', 25000]];
-    savingsDefs.forEach(function (d) {
-      finRecurring.push({ id: uid('fr'), name: d[0], category: d[1], type: 'megtakaritas', frequency: 'havi', paymentDay: null, note: '', priceHistory: [{ amount: d[2], from: '2026-01-01' }], endDate: null });
-    });
-    finLoans.push({ id: uid('fl'), name: 'Babaváró törlesztő', monthlyAmount: 51000, paymentDay: null, startDate: '2026-01-01', endDate: null, note: 'fix' });
-  }
+  // Finance demo seed removed in BETA7j privacy hotfix.
 
   function getRecurringAmountForDate(item, dateKey) {
     var applicable = null;
@@ -13297,7 +13276,7 @@ function renderDashboard() {
     document.querySelectorAll('#fin-tx-type-row .caleditor-type-btn').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-type') === type); });
     document.getElementById('fin-tx-direction-row').classList.toggle('hidden', type !== 'megtakaritas');
     document.getElementById('fin-tx-category-label').textContent = type === 'megtakaritas' ? 'Hova? (megtakarítási hely)' : 'Kategória (opcionális)';
-    document.getElementById('fin-tx-category').placeholder = type === 'megtakaritas' ? 'pl. OTP Optima, Egészségpénztár…' : 'pl. Fizetés, Rezsi…';
+    document.getElementById('fin-tx-category').placeholder = type === 'megtakaritas' ? 'pl. Megtakarítási számla, pénztár…' : 'pl. Fizetés, Rezsi…';
   }
   function setFinTxDirection(dir) {
     finTxDirection = dir;
