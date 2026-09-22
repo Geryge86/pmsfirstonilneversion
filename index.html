@@ -2841,6 +2841,16 @@ body.dashboard-light #dash-calendar-reminders .dash-cal-reminder.today{backgroun
 body.dashboard-light #dash-calendar-reminders .dash-cal-reminder button{background:#e7f3e5!important;color:#17314b!important}
 
 </style>
+
+<style id="beta7l-edzesterv-archive-css">
+.edzesterv-archive-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:8px}
+.edzesterv-card.expired{opacity:.88}
+.edzesterv-card.expired .edzesterv-badge{background:#eef1f4;color:#647487}
+.edzesterv-card.expired.compact .edzesterv-card-details{display:none}
+.edzesterv-card.expired.compact.expanded .edzesterv-card-details{display:block}
+.edzesterv-card.expired.compact{padding-bottom:14px}
+.edzesterv-card.expired .edzesterv-card-icon{filter:saturate(.55)}
+</style>
 </head>
 <body>
 
@@ -5573,7 +5583,7 @@ Clean & Press – 5-5×
     var d = new Date();
     return d.getFullYear() + '. ' + HU_MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getDate() + '., ' + HU_DAYS_FULL[d.getDay()];
   }
-  var APP_BUILD = 'PMS-2.0-beta7k-edzesterv-week-order-pdf-fix';
+  var APP_BUILD = 'PMS-2.0-beta7l-edzesterv-archive-pdf-print';
   var USER_NAME_KEY = 'gery_user_name_v1';
   var userName = 'Felhasználó';
   function cleanUserName(v){ v=String(v||'').trim().replace(/\s+/g,' '); return v.slice(0,32) || 'Felhasználó'; }
@@ -7610,22 +7620,44 @@ Clean & Press – 5-5×
     });
   }
 
-  function plansForDay(dayIndex){ return edzesTervek.filter(function(p){ return p && p.active!==false && Array.isArray(p.days) && p.days.indexOf(dayIndex)!==-1; }); }
+  function edzesTervExpired(p){
+    p=normalizeEdzesTerv(p); return String(p.weekEnd||'') < todayIso();
+  }
+  function edzesTervCurrentWeek(p){
+    p=normalizeEdzesTerv(p); var t=todayIso(); return String(p.weekStart||'')<=t && String(p.weekEnd||'')>=t;
+  }
+  function plansForDay(dayIndex){ return edzesTervek.filter(function(p){ return p && p.active!==false && !edzesTervExpired(p) && edzesTervCurrentWeek(p) && Array.isArray(p.days) && p.days.indexOf(dayIndex)!==-1; }); }
   function renderEdzesTervek(){
     renderEdzesReality();
     var wrap=document.getElementById('edzesterv-list'); if(!wrap)return; wrap.innerHTML='';
-    var today=new Date().getDay(), active=edzesTervek.filter(function(p){return p.active!==false;}).length, todayCount=plansForDay(today).length;
+    /* A lejárt hetek automatikusan archiválódnak: nem számítanak aktívnak. */
+    var changed=false;
+    edzesTervek=edzesTervek.map(function(raw){
+      var p=normalizeEdzesTerv(raw);
+      if(edzesTervExpired(p) && p.active!==false){p.active=false;changed=true;}
+      return p;
+    });
+    if(changed) saveEdzesTervek();
+    var today=new Date().getDay(), active=edzesTervek.filter(function(p){return p.active!==false&&!edzesTervExpired(p);}).length, todayCount=plansForDay(today).length;
     var sum=document.getElementById('edzesterv-summary'); if(sum)sum.textContent=active+' aktív terv'+(todayCount?' · mára '+todayCount:'');
     if(!edzesTervek.length){var e=document.createElement('div');e.className='edzesterv-empty';e.innerHTML='<div style="font-size:27px;margin-bottom:8px">📋</div><b>Még nincs edzésterved.</b><div style="font-size:11px;margin-top:5px">A + Új edzésterv gombbal felépítheted a következő hetedet.</div>';wrap.appendChild(e);return;}
-    edzesTervek.slice().map(normalizeEdzesTerv).sort(function(a,b){return String(a.weekStart||'').localeCompare(String(b.weekStart||''))||String(a.createdAt||'').localeCompare(String(b.createdAt||''));}).forEach(function(raw){
-      var p=normalizeEdzesTerv(raw), meta=EDZESTERV_TYPE_META[p.type]||EDZESTERV_TYPE_META.egyeb, card=document.createElement('div'); card.className='edzesterv-card'+(p.active===false?' inactive':'');
-      var days=(p.days||[]).map(function(d){return '<span class="edzesterv-day'+(d===today?' today':'')+'">'+EDZESTERV_DAY_LABELS[d]+'</span>';}).join('');
+    edzesTervek.slice().map(normalizeEdzesTerv).sort(function(a,b){return String(b.weekStart||'').localeCompare(String(a.weekStart||''))||String(b.createdAt||'').localeCompare(String(a.createdAt||''));}).forEach(function(p){
+      var expired=edzesTervExpired(p), meta=EDZESTERV_TYPE_META[p.type]||EDZESTERV_TYPE_META.egyeb, card=document.createElement('div');
+      card.className='edzesterv-card'+(p.active===false?' inactive':'')+(expired?' expired compact':'');
+      var days=(p.days||[]).map(function(d){return '<span class="edzesterv-day'+(d===today&&!expired?' today':'')+'">'+EDZESTERV_DAY_LABELS[d]+'</span>';}).join('');
       var week=(p.days||[]).map(function(d){
         var x=(p.dayPlans||{})[d]||{text:'',done:false,failed:false};
         var cls='edzesterv-card-dayrow'+(!(x.text||'').trim()?' empty':'')+(x.failed?' failed':'');
         return '<div class="'+cls+'"><span class="day">'+escapeHtml(EDZESTERV_DAY_LABELS[d])+'</span><span class="plan">'+escapeHtml((x.text||'').trim()||'Még nincs konkrét edzés megadva')+'</span><span class="done">'+(x.done?'✓':(x.failed?'✕':''))+'</span></div>';
       }).join('');
-      card.innerHTML='<div class="edzesterv-card-top"><div class="edzesterv-card-icon">'+meta.icon+'</div><div class="edzesterv-card-main"><div class="edzesterv-card-name">'+escapeHtml(p.name||'Névtelen terv')+'</div><div class="edzesterv-card-type">'+escapeHtml(meta.label)+' · '+escapeHtml(edzesWeekLabel(p.weekStart))+'</div></div><span class="edzesterv-badge">'+(p.active===false?'SZÜNETEL':'AKTÍV')+'</span></div><div class="edzesterv-days">'+(days||'<span class="edzesterv-day">Nincs nap kiválasztva</span>')+'</div>'+(week?'<div class="edzesterv-card-week">'+week+'</div>':'')+(p.note?'<div class="edzesterv-note">'+escapeHtml(p.note)+'</div>':'');
+      card.innerHTML='<div class="edzesterv-card-top"><div class="edzesterv-card-icon">'+meta.icon+'</div><div class="edzesterv-card-main"><div class="edzesterv-card-name">'+escapeHtml(p.name||'Névtelen terv')+'</div><div class="edzesterv-card-type">'+escapeHtml(meta.label)+' · '+escapeHtml(edzesWeekLabel(p.weekStart))+'</div></div><span class="edzesterv-badge">'+(expired?'LEJÁRT':(p.active===false?'SZÜNETEL':'AKTÍV'))+'</span></div>'+
+        '<div class="edzesterv-archive-actions"><button type="button" class="btn btn-ghost btn-sm edzesterv-toggle">'+(expired?'Részletek ▾':'')+'</button><button type="button" class="btn btn-ghost btn-sm edzesterv-quick-delete">🗑 Törlés</button></div>'+
+        '<div class="edzesterv-card-details">'+
+        '<div class="edzesterv-days">'+(days||'<span class="edzesterv-day">Nincs nap kiválasztva</span>')+'</div>'+(week?'<div class="edzesterv-card-week">'+week+'</div>':'')+(p.note?'<div class="edzesterv-note">'+escapeHtml(p.note)+'</div>':'')+'</div>';
+      var toggle=card.querySelector('.edzesterv-toggle');
+      if(!expired) toggle.style.display='none';
+      toggle.addEventListener('click',function(ev){ev.stopPropagation();card.classList.toggle('expanded');toggle.textContent=card.classList.contains('expanded')?'Részletek ▴':'Részletek ▾';});
+      card.querySelector('.edzesterv-quick-delete').addEventListener('click',function(ev){ev.stopPropagation();showConfirm('Biztosan törlöd ezt az edzéstervet?',function(){edzesTervek=edzesTervek.filter(function(x){return x.id!==p.id;});saveEdzesTervek();renderEdzesTervek();renderDashboard();});});
       card.addEventListener('click',function(){openEdzesTerv(p.id);}); wrap.appendChild(card);
     });
   }
@@ -8823,15 +8855,16 @@ Clean & Press – 5-5×
     return stats;
   }
   function pmsPrintHtml(title,bodyHtml){
-    var css='body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif;color:#10243e;padding:20px} .ep-title{font-size:24px;font-weight:800;margin-bottom:5px}.ep-subtitle{color:#667b93;margin-bottom:18px}.ep-table{width:100%;border-collapse:collapse;font-size:12px}.ep-table th,.ep-table td{border:1px solid #ccd8e5;padding:7px;vertical-align:top;text-align:left}.ep-table th{background:#eef4fa}.ep-summary-title{font-size:18px;font-weight:800;margin-top:18px}.ep-summary-line{margin:5px 0}@page{size:A4 portrait;margin:12mm}';
+    var css='body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif;color:#10243e;padding:20px;margin:0}.ep-toolbar{position:sticky;top:0;z-index:10;display:flex;gap:10px;justify-content:space-between;align-items:center;background:#fff;border-bottom:1px solid #ccd8e5;padding:12px 0 14px;margin-bottom:18px}.ep-btn{appearance:none;border:1px solid #b8c9da;background:#fff;color:#10243e;border-radius:12px;padding:11px 14px;font:700 14px inherit}.ep-btn.primary{background:#10243e;color:#fff}.ep-title{font-size:24px;font-weight:800;margin-bottom:5px}.ep-subtitle{color:#667b93;margin-bottom:18px}.ep-table{width:100%;border-collapse:collapse;font-size:12px}.ep-table th,.ep-table td{border:1px solid #ccd8e5;padding:7px;vertical-align:top;text-align:left}.ep-table th{background:#eef4fa}.ep-summary-title{font-size:18px;font-weight:800;margin-top:18px}.ep-summary-line{margin:5px 0}@page{size:A4 portrait;margin:12mm}@media print{body{padding:0}.ep-toolbar{display:none!important}}';
     try{
       var w=window.open('','_blank');
       if(w){
-        w.document.open();w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+escapeHtml(title)+'</title><style>'+css+'</style></head><body>'+bodyHtml+'</body></html>');w.document.close();
-        setTimeout(function(){try{w.focus();w.print();}catch(e){}},350); return true;
+        var toolbar='<div class="ep-toolbar"><button class="ep-btn" onclick="window.close()">← Vissza a PMS-be</button><button class="ep-btn primary" onclick="window.print()">🖨 Nyomtatás / Megosztás</button></div>';
+        w.document.open();w.document.write('<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'+escapeHtml(title)+'</title><style>'+css+'</style></head><body>'+toolbar+bodyHtml+'</body></html>');w.document.close();
+        return true;
       }
     }catch(e){}
-    /* Popup-blokkolás esetén a régi, ugyanazon oldalas nyomtatás marad tartalék. */
+    /* Popup-blokkolás esetén ugyanazon oldalas nyomtatás marad tartalék. */
     var area=document.getElementById('app-print-area'); if(area)area.innerHTML=bodyHtml;
     setTimeout(function(){window.print();},50); return false;
   }
