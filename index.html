@@ -5573,7 +5573,7 @@ Clean & Press – 5-5×
     var d = new Date();
     return d.getFullYear() + '. ' + HU_MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getDate() + '., ' + HU_DAYS_FULL[d.getDay()];
   }
-  var APP_BUILD = 'PMS-2.0-beta7j-finance-privacy-hotfix';
+  var APP_BUILD = 'PMS-2.0-beta7k-edzesterv-week-order-pdf-fix';
   var USER_NAME_KEY = 'gery_user_name_v1';
   var userName = 'Felhasználó';
   function cleanUserName(v){ v=String(v||'').trim().replace(/\s+/g,' '); return v.slice(0,32) || 'Felhasználó'; }
@@ -7503,6 +7503,34 @@ Clean & Press – 5-5×
   };
   var EDZESTERV_DAY_LABELS = {1:'H',2:'K',3:'Sze',4:'Cs',5:'P',6:'Szo',0:'V'};
   function saveEdzesTervek(){ try { localStorage.setItem(EDZESTERV_KEY, JSON.stringify(edzesTervek)); markDataChanged(); if(typeof PMSBus!=='undefined')PMSBus.emit('workoutplan:changed',{source:'edzesterv'}); } catch(e){} }
+  function edzesMondayKey(dateLike){
+    var d=dateLike?new Date(dateLike):new Date();
+    if(isNaN(d.getTime()))d=new Date();
+    d=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+    var diff=(d.getDay()+6)%7; d.setDate(d.getDate()-diff);
+    return ymdKey(d.getFullYear(),d.getMonth(),d.getDate());
+  }
+  function edzesSundayKey(mondayKey){
+    var d=new Date(mondayKey+'T12:00:00'); d.setDate(d.getDate()+6);
+    return ymdKey(d.getFullYear(),d.getMonth(),d.getDate());
+  }
+  function edzesWeekLabel(mondayKey){
+    var a=new Date(mondayKey+'T12:00:00'),b=new Date(a);b.setDate(b.getDate()+6);
+    var m1=HU_MONTHS[a.getMonth()],m2=HU_MONTHS[b.getMonth()];
+    return m1+' '+a.getDate()+'.–'+(a.getMonth()===b.getMonth()?'':m2+' ')+b.getDate()+'.';
+  }
+  function inferEdzesWeekStart(p){
+    if(p&&/^\d{4}-\d{2}-\d{2}$/.test(String(p.weekStart||'')))return String(p.weekStart);
+    /* Régi tervekhez a névből próbáljuk visszafejteni a hetet (pl. „Szeptember 14.-20.”). */
+    var name=String((p&&p.name)||''),year=(p&&p.createdAt)?new Date(p.createdAt).getFullYear():new Date().getFullYear();
+    for(var m=0;m<HU_MONTHS.length;m++){
+      if(name.toLocaleLowerCase('hu-HU').indexOf(HU_MONTHS[m].toLocaleLowerCase('hu-HU'))!==-1){
+        var tail=name.slice(name.toLocaleLowerCase('hu-HU').indexOf(HU_MONTHS[m].toLocaleLowerCase('hu-HU'))+HU_MONTHS[m].length);
+        var mm=tail.match(/(\d{1,2})/); if(mm){var d=new Date(year,m,Number(mm[1]));if(!isNaN(d.getTime()))return edzesMondayKey(d);}
+      }
+    }
+    return edzesMondayKey((p&&p.createdAt)||new Date());
+  }
   function normalizeEdzesTerv(p){
     p=p||{};
     var days=Array.isArray(p.days)?p.days.map(Number).filter(function(d,i,a){return d>=0&&d<=6&&a.indexOf(d)===i;}):[];
@@ -7521,7 +7549,7 @@ Clean & Press – 5-5×
       id:p.id||uid('etv'),name:String(p.name||'').trim(),
       type:EDZESTERV_TYPE_META[p.type]?p.type:'eronleti',
       days:days,dayPlans:dayPlans,content:legacy,note:String(p.note||''),
-      active:p.active!==false,createdAt:p.createdAt||new Date().toISOString(),
+      active:p.active!==false,weekStart:inferEdzesWeekStart(p),weekEnd:edzesSundayKey(inferEdzesWeekStart(p)),createdAt:p.createdAt||new Date().toISOString(),
       updatedAt:p.updatedAt||p.createdAt||new Date().toISOString()
     };
   }
@@ -7589,7 +7617,7 @@ Clean & Press – 5-5×
     var today=new Date().getDay(), active=edzesTervek.filter(function(p){return p.active!==false;}).length, todayCount=plansForDay(today).length;
     var sum=document.getElementById('edzesterv-summary'); if(sum)sum.textContent=active+' aktív terv'+(todayCount?' · mára '+todayCount:'');
     if(!edzesTervek.length){var e=document.createElement('div');e.className='edzesterv-empty';e.innerHTML='<div style="font-size:27px;margin-bottom:8px">📋</div><b>Még nincs edzésterved.</b><div style="font-size:11px;margin-top:5px">A + Új edzésterv gombbal felépítheted a következő hetedet.</div>';wrap.appendChild(e);return;}
-    edzesTervek.slice().sort(function(a,b){return (b.active?1:0)-(a.active?1:0)||String(a.name).localeCompare(String(b.name),'hu');}).forEach(function(raw){
+    edzesTervek.slice().map(normalizeEdzesTerv).sort(function(a,b){return String(a.weekStart||'').localeCompare(String(b.weekStart||''))||String(a.createdAt||'').localeCompare(String(b.createdAt||''));}).forEach(function(raw){
       var p=normalizeEdzesTerv(raw), meta=EDZESTERV_TYPE_META[p.type]||EDZESTERV_TYPE_META.egyeb, card=document.createElement('div'); card.className='edzesterv-card'+(p.active===false?' inactive':'');
       var days=(p.days||[]).map(function(d){return '<span class="edzesterv-day'+(d===today?' today':'')+'">'+EDZESTERV_DAY_LABELS[d]+'</span>';}).join('');
       var week=(p.days||[]).map(function(d){
@@ -7597,7 +7625,7 @@ Clean & Press – 5-5×
         var cls='edzesterv-card-dayrow'+(!(x.text||'').trim()?' empty':'')+(x.failed?' failed':'');
         return '<div class="'+cls+'"><span class="day">'+escapeHtml(EDZESTERV_DAY_LABELS[d])+'</span><span class="plan">'+escapeHtml((x.text||'').trim()||'Még nincs konkrét edzés megadva')+'</span><span class="done">'+(x.done?'✓':(x.failed?'✕':''))+'</span></div>';
       }).join('');
-      card.innerHTML='<div class="edzesterv-card-top"><div class="edzesterv-card-icon">'+meta.icon+'</div><div class="edzesterv-card-main"><div class="edzesterv-card-name">'+escapeHtml(p.name||'Névtelen terv')+'</div><div class="edzesterv-card-type">'+escapeHtml(meta.label)+'</div></div><span class="edzesterv-badge">'+(p.active===false?'SZÜNETEL':'AKTÍV')+'</span></div><div class="edzesterv-days">'+(days||'<span class="edzesterv-day">Nincs nap kiválasztva</span>')+'</div>'+(week?'<div class="edzesterv-card-week">'+week+'</div>':'')+(p.note?'<div class="edzesterv-note">'+escapeHtml(p.note)+'</div>':'');
+      card.innerHTML='<div class="edzesterv-card-top"><div class="edzesterv-card-icon">'+meta.icon+'</div><div class="edzesterv-card-main"><div class="edzesterv-card-name">'+escapeHtml(p.name||'Névtelen terv')+'</div><div class="edzesterv-card-type">'+escapeHtml(meta.label)+' · '+escapeHtml(edzesWeekLabel(p.weekStart))+'</div></div><span class="edzesterv-badge">'+(p.active===false?'SZÜNETEL':'AKTÍV')+'</span></div><div class="edzesterv-days">'+(days||'<span class="edzesterv-day">Nincs nap kiválasztva</span>')+'</div>'+(week?'<div class="edzesterv-card-week">'+week+'</div>':'')+(p.note?'<div class="edzesterv-note">'+escapeHtml(p.note)+'</div>':'');
       card.addEventListener('click',function(){openEdzesTerv(p.id);}); wrap.appendChild(card);
     });
   }
@@ -7606,7 +7634,8 @@ Clean & Press – 5-5×
     var raw=id?edzesTervek.find(function(x){return x.id===id;}):null;
     var p=raw?normalizeEdzesTerv(raw):null;
     document.getElementById('edzesterv-modal-title').textContent=p?'Edzésterv szerkesztése':'Új edzésterv';
-    document.getElementById('edzesterv-f-name').value=p?p.name:'';
+    var autoWeekStart=p?p.weekStart:edzesMondayKey(new Date());
+    document.getElementById('edzesterv-f-name').value=p?p.name:edzesWeekLabel(autoWeekStart);
     document.getElementById('edzesterv-f-type').value=p?p.type:'eronleti';
     document.getElementById('edzesterv-f-note').value=p?p.note:'';
     document.getElementById('edzesterv-f-active').checked=p?p.active!==false:true;
@@ -7641,6 +7670,7 @@ Clean & Press – 5-5×
       id:planId,name:name,type:document.getElementById('edzesterv-f-type').value,
       days:days,dayPlans:dayPlans,content:'',note:document.getElementById('edzesterv-f-note').value,
       active:document.getElementById('edzesterv-f-active').checked,
+      weekStart:oldNorm?oldNorm.weekStart:edzesMondayKey(new Date()),weekEnd:oldNorm?oldNorm.weekEnd:edzesSundayKey(edzesMondayKey(new Date())),
       createdAt:old?old.createdAt:null,updatedAt:new Date().toISOString()
     });
     if(old) edzesTervek=edzesTervek.map(function(x){return x.id===old.id?p:x;}); else edzesTervek.push(p);
@@ -8792,6 +8822,19 @@ Clean & Press – 5-5×
     });
     return stats;
   }
+  function pmsPrintHtml(title,bodyHtml){
+    var css='body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif;color:#10243e;padding:20px} .ep-title{font-size:24px;font-weight:800;margin-bottom:5px}.ep-subtitle{color:#667b93;margin-bottom:18px}.ep-table{width:100%;border-collapse:collapse;font-size:12px}.ep-table th,.ep-table td{border:1px solid #ccd8e5;padding:7px;vertical-align:top;text-align:left}.ep-table th{background:#eef4fa}.ep-summary-title{font-size:18px;font-weight:800;margin-top:18px}.ep-summary-line{margin:5px 0}@page{size:A4 portrait;margin:12mm}';
+    try{
+      var w=window.open('','_blank');
+      if(w){
+        w.document.open();w.document.write('<!doctype html><html><head><meta charset="utf-8"><title>'+escapeHtml(title)+'</title><style>'+css+'</style></head><body>'+bodyHtml+'</body></html>');w.document.close();
+        setTimeout(function(){try{w.focus();w.print();}catch(e){}},350); return true;
+      }
+    }catch(e){}
+    /* Popup-blokkolás esetén a régi, ugyanazon oldalas nyomtatás marad tartalék. */
+    var area=document.getElementById('app-print-area'); if(area)area.innerHTML=bodyHtml;
+    setTimeout(function(){window.print();},50); return false;
+  }
   function exportEdzesPdf() {
     var year = edzesViewYear, month = edzesViewMonth;
     var dates = monthDates(year, month);
@@ -8825,8 +8868,7 @@ Clean & Press – 5-5×
       + '<div class="ep-summary-title">Havi összesítő</div>'
       + summaryHtml;
 
-    document.getElementById('app-print-area').innerHTML = html;
-    window.print();
+    pmsPrintHtml('Edzésnapló - '+HU_MONTHS[month]+' '+year, html);
   }
   function shiftEdzesMonth(delta) {
     edzesViewMonth += delta;
