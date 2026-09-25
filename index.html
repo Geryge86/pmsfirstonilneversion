@@ -5596,7 +5596,7 @@ Clean & Press – 5-5×
     var d = new Date();
     return d.getFullYear() + '. ' + HU_MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getDate() + '., ' + HU_DAYS_FULL[d.getDay()];
   }
-  var APP_BUILD = 'PMS-2.0-beta7n4-naptar-kompakt-napitervezo';
+  var APP_BUILD = 'PMS-2.0-beta7n5-alosztalypenz-nyugta-fix';
   var USER_NAME_KEY = 'gery_user_name_v1';
   var userName = 'Felhasználó';
   function cleanUserName(v){ v=String(v||'').trim().replace(/\s+/g,' '); return v.slice(0,32) || 'Felhasználó'; }
@@ -11138,14 +11138,17 @@ Clean & Press – 5-5×
     });
   }
   function printAlpReceipt(p) {
+    if (!p) return;
     var html = ''
       + '<div class="ep-title">Igazolás</div>'
       + '<div class="ep-subtitle">Alosztálypénz befizetés</div>'
       + '<div class="ep-receipt-line">Név: <b>' + escapeHtml(p.personName) + '</b></div>'
-      + '<div class="ep-receipt-line">Dátum: <b>' + fmtFullDate(p.date) + '</b></div>'
-      + '<div class="ep-receipt-line">Összeg: <b>' + fmtFt(p.amount) + ' Ft</b></div>';
-    document.getElementById('app-print-area').innerHTML = html;
-    window.print();
+      + '<div class="ep-receipt-line">Dátum: <b>' + escapeHtml(fmtFullDate(p.date)) + '</b></div>'
+      + '<div class="ep-receipt-line">Összeg: <b>' + escapeHtml(fmtFt(p.amount)) + ' Ft</b></div>'
+      + '<div class="ep-summary-line" style="margin-top:24px">A befizetés rögzítve a PMS Alosztálypénz nyilvántartásában.</div>';
+    /* iOS / mobil böngészőn a közvetlen window.print() megbízhatatlan lehet.
+       Ugyanazt a külön nyomtatási nézetet használjuk, mint az edzésnapló PDF/nyomtatás. */
+    pmsPrintHtml('Alosztálypénz – befizetési igazolás', html);
   }
   function openAlpExpenseModal() {
     document.getElementById('alp-e-date').value = todayIso();
