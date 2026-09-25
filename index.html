@@ -2861,7 +2861,7 @@ body.dashboard-light .dash2-daily-box-title,body.dashboard-light .dash2-focus-to
 <style id="beta7n-calendar-planner-css">
 .cal-planner-month-panel{margin:0 0 14px;padding:12px;border:1px solid var(--border,#d7e1ec);border-radius:16px;background:var(--card,#fff)}
 .cal-planner-month-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.cal-planner-month-head b{font-size:16px}.cal-planner-month-head span{display:block;font-size:11px;color:var(--muted,#70839a);margin-top:2px}
-#cal-planner-month-list{display:flex;flex-direction:column;gap:7px}.cal-planner-day{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-radius:12px;background:var(--soft,#f3f7fb);cursor:pointer}.cal-planner-datebox{min-width:42px;text-align:center}.cal-planner-datebox b{display:block;font-size:18px}.cal-planner-datebox span{font-size:10px;color:var(--muted,#70839a)}.cal-planner-items{min-width:0;flex:1}.cal-planner-line{display:flex;gap:7px;align-items:baseline;font-size:12px;line-height:1.35}.cal-planner-line time{font-weight:800;min-width:38px}.cal-planner-line span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cal-planner-empty{font-size:12px;color:var(--muted,#70839a);padding:6px 2px}
+#cal-planner-month-list{display:flex;flex-direction:column;gap:7px}.cal-planner-day{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-radius:12px;background:var(--soft,#f3f7fb)}.cal-planner-day.is-today{border:2px solid #d99b16;background:rgba(217,155,22,.08)}.cal-planner-datebox{min-width:42px;text-align:center}.cal-planner-datebox b{display:block;font-size:18px}.cal-planner-datebox span{font-size:10px;color:var(--muted,#70839a)}.cal-planner-items{min-width:0;flex:1}.cal-planner-line{display:flex;gap:7px;align-items:baseline;font-size:12px;line-height:1.35}.cal-planner-line time{font-weight:800;min-width:38px}.cal-planner-line span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cal-planner-empty{font-size:12px;color:var(--muted,#70839a);padding:6px 2px}.cal-planner-compact{width:100%;border:1px solid var(--border,#d7e1ec);background:var(--soft,#f3f7fb);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px;text-align:left;color:inherit;font:inherit}.cal-planner-compact-date{font-weight:800;min-width:78px}.cal-planner-compact-meta{flex:1;color:var(--muted,#70839a);font-size:12px}.cal-planner-chevron{font-weight:900}.cal-planner-expand{display:none;margin-top:5px;padding:8px 10px 10px 54px;background:var(--soft,#f3f7fb);border-radius:0 0 12px 12px}.cal-planner-wrap.open .cal-planner-expand{display:block}.cal-planner-wrap.open .cal-planner-compact{border-radius:12px 12px 0 0}.cal-planner-open-btn{margin-top:7px;border:1px solid var(--border,#d7e1ec);background:var(--card,#fff);border-radius:9px;padding:6px 10px;font-weight:700}.cal-planner-past{border-top:1px solid var(--border,#d7e1ec);padding-top:6px}.cal-planner-past summary{cursor:pointer;font-weight:800;font-size:12px;color:var(--muted,#70839a);padding:6px 2px}.cal-day.has-planner:after{content:'📋';position:absolute;right:4px;bottom:3px;font-size:10px}.cal-day{position:relative}
 </style>
 </head>
 <body>
@@ -5596,7 +5596,7 @@ Clean & Press – 5-5×
     var d = new Date();
     return d.getFullYear() + '. ' + HU_MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getDate() + '., ' + HU_DAYS_FULL[d.getDay()];
   }
-  var APP_BUILD = 'PMS-2.0-beta7n3-szolgalat-vege-live-fix';
+  var APP_BUILD = 'PMS-2.0-beta7n4-naptar-kompakt-napitervezo';
   var USER_NAME_KEY = 'gery_user_name_v1';
   var userName = 'Felhasználó';
   function cleanUserName(v){ v=String(v||'').trim().replace(/\s+/g,' '); return v.slice(0,32) || 'Felhasználó'; }
@@ -6606,17 +6606,28 @@ Clean & Press – 5-5×
   function toggleCalendarOccurrenceDone(eventId,key){var ev=calendarEvents.find(function(x){return x.id===eventId;});if(!ev)return;if(!ev.completed)ev.completed={};if(ev.completed[key])delete ev.completed[key];else ev.completed[key]=true;ev.updatedAt=new Date().toISOString();saveCalendarEvents();renderCalendar();renderDashboard();}
   function renderCalendarPlannerMonthPanel(){
     var host=document.getElementById('cal-planner-month-list'); if(!host)return;
-    var rows=[];
+    var rows=[], now=new Date(), todayKey=ymdKey(now.getFullYear(),now.getMonth(),now.getDate());
     Object.keys(tervezoPlans||{}).sort().forEach(function(key){
       if(String(key).slice(0,7)!==(viewYear+'-'+pad2(viewMonth+1)))return;
-      var plan=tervezoPlans[key]||{}, items=[];
-      if(plan.schedule&&typeof plan.schedule==='object')Object.keys(plan.schedule).sort().forEach(function(tm){var tx=String(plan.schedule[tm]||'').trim();if(tx)items.push({time:tm,text:tx});});
-      (plan.todos||[]).forEach(function(t){var tx=String((t&&t.text)||'').trim();if(tx)items.push({time:'',text:tx+(t.done?' ✓':'')});});
-      if(items.length)rows.push({key:key,items:items});
+      var plan=tervezoPlans[key]||{}, items=[], timed=0, todos=0;
+      if(plan.schedule&&typeof plan.schedule==='object')Object.keys(plan.schedule).sort().forEach(function(tm){var tx=String(plan.schedule[tm]||'').trim();if(tx){items.push({time:tm,text:tx});timed++;}});
+      (plan.todos||[]).forEach(function(t){var tx=String((t&&t.text)||'').trim();if(tx){items.push({time:'',text:tx+(t.done?' ✓':'')});todos++;}});
+      if(items.length)rows.push({key:key,items:items,timed:timed,todos:todos});
     });
+    document.querySelectorAll('#cal-grid .cal-day.has-planner').forEach(function(c){c.classList.remove('has-planner');});
+    rows.forEach(function(r){var c=document.querySelector('#cal-grid .cal-day[data-key="'+r.key+'"]');if(c)c.classList.add('has-planner');});
     if(!rows.length){host.innerHTML='<div class="cal-planner-empty">Ebben a hónapban még nincs kitöltött napi tervező.</div>';return;}
-    host.innerHTML=rows.map(function(r){var d=new Date(r.key+'T12:00:00'),wd=HU_DAYS_FULL[d.getDay()]||'';return '<div class="cal-planner-day" data-planner-key="'+r.key+'"><div class="cal-planner-datebox"><b>'+d.getDate()+'</b><span>'+escapeHtml(wd.slice(0,3))+'</span></div><div class="cal-planner-items">'+r.items.map(function(x){return '<div class="cal-planner-line">'+(x.time?'<time>'+escapeHtml(x.time)+'</time>':'<time>✓</time>')+'<span>'+escapeHtml(x.text)+'</span></div>';}).join('')+'</div></div>';}).join('');
-    host.querySelectorAll('[data-planner-key]').forEach(function(el){el.addEventListener('click',function(){calDaySummaryKey=this.getAttribute('data-planner-key');openCalendarDayPlannerFromSummary();});});
+    function detailLines(r){return r.items.map(function(x){return '<div class="cal-planner-line">'+(x.time?'<time>'+escapeHtml(x.time)+'</time>':'<time>✓</time>')+'<span>'+escapeHtml(x.text)+'</span></div>';}).join('');}
+    function compact(r){var d=new Date(r.key+'T12:00:00'),wd=HU_DAYS_FULL[d.getDay()]||'',meta=[];if(r.timed)meta.push(r.timed+' időpont');if(r.todos)meta.push(r.todos+' teendő');return '<div class="cal-planner-wrap" data-planner-wrap="'+r.key+'"><button type="button" class="cal-planner-compact" data-planner-toggle="'+r.key+'"><span class="cal-planner-compact-date">'+d.getDate()+'. '+escapeHtml(wd.slice(0,3))+'</span><span class="cal-planner-compact-meta">'+meta.join(' · ')+'</span><span class="cal-planner-chevron">›</span></button><div class="cal-planner-expand">'+detailLines(r)+'<button type="button" class="cal-planner-open-btn" data-planner-open="'+r.key+'">Napi terv megnyitása</button></div></div>';}
+    var today=rows.filter(function(r){return r.key===todayKey;})[0], future=rows.filter(function(r){return r.key>todayKey;}), past=rows.filter(function(r){return r.key<todayKey;});
+    var html='';
+    if(today){var td=new Date(today.key+'T12:00:00');html+='<div class="cal-planner-day is-today"><div class="cal-planner-datebox"><b>MA</b><span>'+td.getDate()+'. '+escapeHtml((HU_DAYS_FULL[td.getDay()]||'').slice(0,3))+'</span></div><div class="cal-planner-items">'+detailLines(today)+'<button type="button" class="cal-planner-open-btn" data-planner-open="'+today.key+'">Napi terv megnyitása</button></div></div>';}
+    else if(viewYear===now.getFullYear()&&viewMonth===now.getMonth())html+='<div class="cal-planner-empty">Ma nincs kitöltött napi terv.</div>';
+    html+=future.map(compact).join('');
+    if(past.length)html+='<details class="cal-planner-past"><summary>Korábbi napok ('+past.length+')</summary>'+past.slice().reverse().map(compact).join('')+'</details>';
+    host.innerHTML=html;
+    host.querySelectorAll('[data-planner-toggle]').forEach(function(btn){btn.addEventListener('click',function(){var w=this.closest('.cal-planner-wrap');w.classList.toggle('open');var ch=this.querySelector('.cal-planner-chevron');if(ch)ch.textContent=w.classList.contains('open')?'⌄':'›';});});
+    host.querySelectorAll('[data-planner-open]').forEach(function(btn){btn.addEventListener('click',function(e){e.stopPropagation();calDaySummaryKey=this.getAttribute('data-planner-open');openCalendarDayPlannerFromSummary();});});
   }
   function renderCalendarEventLayer(){
     var start=new Date(viewYear,viewMonth,1),end=new Date(viewYear,viewMonth+1,0),occ=calEventOccurrencesBetween(start,end,true),by={};occ.forEach(function(o){(by[o.key]||(by[o.key]=[])).push(o);});
