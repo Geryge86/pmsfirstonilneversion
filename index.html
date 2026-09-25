@@ -2840,6 +2840,12 @@ body.dashboard-light #dash-calendar-reminders .dash-cal-reminder.overdue{backgro
 body.dashboard-light #dash-calendar-reminders .dash-cal-reminder.today{background:#fff9ec!important;border-color:#e7c76d!important;color:#70571b!important}
 body.dashboard-light #dash-calendar-reminders .dash-cal-reminder button{background:#e7f3e5!important;color:#17314b!important}
 
+
+/* BETA7m · Napi tervező ↔ Naptár teljes szinkron */
+.dash2-daily-box-title{margin:10px 0 5px;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.dash2-focus-todo-row{display:flex;gap:7px;align-items:flex-start;padding:5px 0;font-size:13px;line-height:1.25;border-bottom:1px solid rgba(120,140,160,.14)}
+.dash2-focus-todo-row.done{opacity:.55;text-decoration:line-through}
+body.dashboard-light .dash2-daily-box-title,body.dashboard-light .dash2-focus-todo-row{color:#17263a!important}
 </style>
 
 <style id="beta7l-edzesterv-archive-css">
@@ -2850,6 +2856,12 @@ body.dashboard-light #dash-calendar-reminders .dash-cal-reminder button{backgrou
 .edzesterv-card.expired.compact.expanded .edzesterv-card-details{display:block}
 .edzesterv-card.expired.compact{padding-bottom:14px}
 .edzesterv-card.expired .edzesterv-card-icon{filter:saturate(.55)}
+</style>
+
+<style id="beta7n-calendar-planner-css">
+.cal-planner-month-panel{margin:0 0 14px;padding:12px;border:1px solid var(--border,#d7e1ec);border-radius:16px;background:var(--card,#fff)}
+.cal-planner-month-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.cal-planner-month-head b{font-size:16px}.cal-planner-month-head span{display:block;font-size:11px;color:var(--muted,#70839a);margin-top:2px}
+#cal-planner-month-list{display:flex;flex-direction:column;gap:7px}.cal-planner-day{display:flex;gap:10px;align-items:flex-start;padding:9px 10px;border-radius:12px;background:var(--soft,#f3f7fb);cursor:pointer}.cal-planner-datebox{min-width:42px;text-align:center}.cal-planner-datebox b{display:block;font-size:18px}.cal-planner-datebox span{font-size:10px;color:var(--muted,#70839a)}.cal-planner-items{min-width:0;flex:1}.cal-planner-line{display:flex;gap:7px;align-items:baseline;font-size:12px;line-height:1.35}.cal-planner-line time{font-weight:800;min-width:38px}.cal-planner-line span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.cal-planner-empty{font-size:12px;color:var(--muted,#70839a);padding:6px 2px}
 </style>
 </head>
 <body>
@@ -2923,6 +2935,7 @@ body.dashboard-light #dash-calendar-reminders .dash-cal-reminder button{backgrou
       </div>
       <div id="cal-weekdays"><span>H</span><span>K</span><span>Sze</span><span>Cs</span><span>P</span><span>Szo</span><span>V</span></div>
       <div id="cal-scroll">
+        <section id="cal-planner-month-panel" class="cal-planner-month-panel"><div class="cal-planner-month-head"><div><b>🗓️ Napi tervező</b><span>Időpontos bejegyzések és napi teendők ebben a hónapban.</span></div></div><div id="cal-planner-month-list"></div></section>
         <div id="cal-event-toolbar"><div class="cal-event-head"><b>📌 Események és emlékeztetők</b><span>Egyszeri vagy ismétlődő személyes határidők.</span></div><button type="button" id="cal-event-add" class="btn btn-primary btn-sm">+ Esemény</button></div>
         <div id="cal-event-month-list"></div>
         <div class="cal-view-switcher" id="cal-view-switcher">
@@ -4696,9 +4709,9 @@ body.dashboard-light #dash-calendar-reminders .dash-cal-reminder button{backgrou
       <label>Szolgálati idő (opcionális)</label>
       <div class="caleditor-time-pair">
         <div><input type="time" id="caleditor-start-time" aria-label="Szolgálat kezdete"></div>
-        <div><input type="time" id="caleditor-end-time" aria-label="Szolgálat vége"></div>
+        <div><input type="text" id="caleditor-end-time" aria-label="Szolgálat vége" placeholder="Automatikus" readonly inputmode="none"></div>
       </div>
-      <div class="caleditor-info" style="margin-top:8px;margin-bottom:0;">Ha csak a kezdést adod meg, a befejezést a szolgálati óraszámból számolom.</div>
+      <div class="caleditor-info" style="margin-top:8px;margin-bottom:0;">A befejezést automatikusan számolom: kezdés + szolgálati óraszám. Pl. 14:00 + 12 óra = 02:00 másnap.</div>
     </div>
     <div class="caleditor-row hidden" id="caleditor-original-row">
       <label>Eredetileg tervezett szolgálat (ha volt)</label>
@@ -5583,7 +5596,7 @@ Clean & Press – 5-5×
     var d = new Date();
     return d.getFullYear() + '. ' + HU_MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getDate() + '., ' + HU_DAYS_FULL[d.getDay()];
   }
-  var APP_BUILD = 'PMS-2.0-beta7l-edzesterv-archive-pdf-print';
+  var APP_BUILD = 'PMS-2.0-beta7n3-szolgalat-vege-live-fix';
   var USER_NAME_KEY = 'gery_user_name_v1';
   var userName = 'Felhasználó';
   function cleanUserName(v){ v=String(v||'').trim().replace(/\s+/g,' '); return v.slice(0,32) || 'Felhasználó'; }
@@ -6591,6 +6604,20 @@ Clean & Press – 5-5×
   }
   function deleteCalendarEventForm(){if(!editingCalendarEventId)return;showConfirm('Biztosan törlöd ezt az eseményt?',function(){calendarEvents=calendarEvents.filter(function(x){return x.id!==editingCalendarEventId;});saveCalendarEvents();closeCalendarEventModal();renderCalendar();renderDashboard();});}
   function toggleCalendarOccurrenceDone(eventId,key){var ev=calendarEvents.find(function(x){return x.id===eventId;});if(!ev)return;if(!ev.completed)ev.completed={};if(ev.completed[key])delete ev.completed[key];else ev.completed[key]=true;ev.updatedAt=new Date().toISOString();saveCalendarEvents();renderCalendar();renderDashboard();}
+  function renderCalendarPlannerMonthPanel(){
+    var host=document.getElementById('cal-planner-month-list'); if(!host)return;
+    var rows=[];
+    Object.keys(tervezoPlans||{}).sort().forEach(function(key){
+      if(String(key).slice(0,7)!==(viewYear+'-'+pad2(viewMonth+1)))return;
+      var plan=tervezoPlans[key]||{}, items=[];
+      if(plan.schedule&&typeof plan.schedule==='object')Object.keys(plan.schedule).sort().forEach(function(tm){var tx=String(plan.schedule[tm]||'').trim();if(tx)items.push({time:tm,text:tx});});
+      (plan.todos||[]).forEach(function(t){var tx=String((t&&t.text)||'').trim();if(tx)items.push({time:'',text:tx+(t.done?' ✓':'')});});
+      if(items.length)rows.push({key:key,items:items});
+    });
+    if(!rows.length){host.innerHTML='<div class="cal-planner-empty">Ebben a hónapban még nincs kitöltött napi tervező.</div>';return;}
+    host.innerHTML=rows.map(function(r){var d=new Date(r.key+'T12:00:00'),wd=HU_DAYS_FULL[d.getDay()]||'';return '<div class="cal-planner-day" data-planner-key="'+r.key+'"><div class="cal-planner-datebox"><b>'+d.getDate()+'</b><span>'+escapeHtml(wd.slice(0,3))+'</span></div><div class="cal-planner-items">'+r.items.map(function(x){return '<div class="cal-planner-line">'+(x.time?'<time>'+escapeHtml(x.time)+'</time>':'<time>✓</time>')+'<span>'+escapeHtml(x.text)+'</span></div>';}).join('')+'</div></div>';}).join('');
+    host.querySelectorAll('[data-planner-key]').forEach(function(el){el.addEventListener('click',function(){calDaySummaryKey=this.getAttribute('data-planner-key');openCalendarDayPlannerFromSummary();});});
+  }
   function renderCalendarEventLayer(){
     var start=new Date(viewYear,viewMonth,1),end=new Date(viewYear,viewMonth+1,0),occ=calEventOccurrencesBetween(start,end,true),by={};occ.forEach(function(o){(by[o.key]||(by[o.key]=[])).push(o);});
     Object.keys(by).forEach(function(key){var cell=document.querySelector('#cal-grid .cal-day[data-key="'+key+'"]');if(!cell)return;var p=document.createElement('div');p.className='cal-event-pips';p.title=by[key].map(function(o){return o.event.title;}).join(' • ');by[key].slice(0,3).forEach(function(o){var q=document.createElement('span');q.className='cal-event-pip '+(o.event.category||'general');p.appendChild(q);});cell.appendChild(p);});
@@ -6687,8 +6714,14 @@ Clean & Press – 5-5×
     });
 
     var plan=tervezoPlans&&tervezoPlans[key];
+    if(plan&&plan.schedule&&typeof plan.schedule==='object'){
+      Object.keys(plan.schedule).sort().forEach(function(tm){
+        var tx=String(plan.schedule[tm]||'').trim();
+        if(tx)out.tasks.push({title:tx,meta:'🕘 '+tm+' · Időpont',time:tm,kind:'schedule'});
+      });
+    }
     (plan&&plan.todos||[]).forEach(function(t){
-      out.tasks.push({title:t.text||'Tennivaló',meta:t.done?'✓ Kész':'Tervezett'});
+      out.tasks.push({title:t.text||'Tennivaló',meta:t.done?'✓ Kész':'Tervezett',kind:'todo'});
     });
 
     var active=mtdActiveTasksSorted();
@@ -6806,6 +6839,7 @@ Clean & Press – 5-5×
       grid.appendChild(cell);
     }
 
+    renderCalendarPlannerMonthPanel();
     renderCalendarEventLayer();
     renderCalendarPmsIcons();
     renderCalendarWorkoutPerformance();
@@ -6989,14 +7023,28 @@ Clean & Press – 5-5×
       overtimeRow.classList.toggle('hidden', !checked);
     }
   }
+  function calTimePlusHours(start, hours){
+    if(!start)return '';
+    var p=start.split(':'); if(p.length<2)return '';
+    var mins=(parseInt(p[0],10)*60+parseInt(p[1],10)+(Number(hours)||12)*60)%(24*60);
+    return pad2(Math.floor(mins/60))+':'+pad2(mins%60);
+  }
+  function calSyncServiceEndFromStart(){
+    var st=document.getElementById('caleditor-start-time'), en=document.getElementById('caleditor-end-time'), hs=document.getElementById('caleditor-hours');
+    if(!st||!en||!hs)return;
+    var start=(st.value||'').trim();
+    if(!start){ en.value=''; return; }
+    var h=parseInt(hs.value,10); if(isNaN(h)||h<=0)h=12;
+    en.value=calTimePlusHours(start,h);
+  }
   function openCalDayEditor(key) {
     caleditorKey = key;
     var entry = dayEntry(key);
     document.getElementById('caleditor-date').textContent = fmtCaleditorDate(key);
     document.getElementById('caleditor-service-name').value = entry && entry.serviceName ? entry.serviceName : '';
-    fillCalHourSelect(document.getElementById('caleditor-hours'), entry && entry.type === 'work' ? entry.hours : null);
+    fillCalHourSelect(document.getElementById('caleditor-hours'), entry && entry.type === 'work' && entry.hours ? entry.hours : 12);
     document.getElementById('caleditor-start-time').value = entry && entry.type === 'work' && entry.startTime ? entry.startTime : '';
-    document.getElementById('caleditor-end-time').value = entry && entry.type === 'work' && entry.endTime ? entry.endTime : '';
+    document.getElementById('caleditor-end-time').value = entry && entry.type === 'work' && entry.startTime ? calTimePlusHours(entry.startTime, entry.hours || 12) : '';
     var overtimeChecked = !!(entry && (entry.type === 'pi' || entry.type === 'pn') && entry.hours);
     document.getElementById('caleditor-overtime-check').checked = overtimeChecked;
     fillCalHourSelect(document.getElementById('caleditor-overtime-hours'), overtimeChecked ? entry.hours : null);
@@ -7009,6 +7057,7 @@ Clean & Press – 5-5×
     setCaleditorType(entry ? entry.type : 'work');
     document.getElementById('caleditor-overtime-row').classList.toggle('hidden', !overtimeChecked);
     document.getElementById('caleditor-modal').classList.remove('hidden');
+    setTimeout(calSyncServiceEndFromStart, 0);
   }
   function hideCalDayEditor() { document.getElementById('caleditor-modal').classList.add('hidden'); }
   function saveCalDayEditor() {
@@ -7016,8 +7065,10 @@ Clean & Press – 5-5×
     if (caleditorType === 'work') {
       var h = parseInt(document.getElementById('caleditor-hours').value, 10);
       var startTime = document.getElementById('caleditor-start-time').value || '';
-      var endTime = document.getElementById('caleditor-end-time').value || '';
-      workdays[caleditorKey] = { type: 'work', hours: isNaN(h) ? null : h, startTime: startTime, endTime: endTime, serviceName: document.getElementById('caleditor-service-name').value.trim() };
+      if(isNaN(h) || h <= 0) h = 12;
+      var endTime = startTime ? calTimePlusHours(startTime, h) : '';
+      document.getElementById('caleditor-end-time').value = endTime;
+      workdays[caleditorKey] = { type: 'work', hours: h, startTime: startTime, endTime: endTime, serviceName: document.getElementById('caleditor-service-name').value.trim() };
     } else if (caleditorType === 'b') {
       var orig = parseInt(document.getElementById('caleditor-original-hours').value, 10);
       workdays[caleditorKey] = { type: 'b', originalHours: (!isNaN(orig) && orig > 0) ? orig : 0 };
@@ -11911,12 +11962,22 @@ Clean & Press – 5-5×
     }
     var nextSchedule=scheduleItems[0]||null;
     if(main){
-      if(scheduleItems.length){
-        main.innerHTML=scheduleItems.map(function(item){
-          return '<div class="dash2-focus-schedule-row"><b>'+escapeHtml(item.time)+'</b><span> · '+escapeHtml(item.text)+'</span></div>';
-        }).join('');
+      if(scheduleItems.length||todos.length){
+        var focusHtml='';
+        if(scheduleItems.length){
+          focusHtml+='<div class="dash2-daily-box-title">🕘 Mai időpontok</div>'+scheduleItems.map(function(item){
+            return '<div class="dash2-focus-schedule-row"><b>'+escapeHtml(item.time)+'</b><span> · '+escapeHtml(item.text)+'</span></div>';
+          }).join('');
+        }
+        if(todos.length){
+          focusHtml+='<div class="dash2-daily-box-title">✓ Napi teendők</div>'+todos.map(function(t){
+            var label=escapeHtml(t.text||t.title||'Tennivaló');
+            return '<div class="dash2-focus-todo-row'+(t.done?' done':'')+'"><span>'+(t.done?'✓':'○')+'</span><span>'+label+'</span></div>';
+          }).join('');
+        }
+        main.innerHTML=focusHtml;
       } else {
-        main.textContent=first ? (first.text || first.title || 'Következő feladat') : (todos.length ? 'A mai feladatok készen vannak' : 'Ma még nincs kiemelt feladat');
+        main.textContent=first ? (first.text || first.title || 'Következő feladat') : 'Ma még nincs kiemelt feladat';
       }
     }
     if(sub){
@@ -15350,6 +15411,25 @@ function renderDashboard() {
     },{passive:true});
   }
 })();
+
+  // BETA7n3: stabil élő szolgálati végidő-számítás iOS/Safari alatt is.
+  (function(){
+    function syncServiceTime(){ calSyncServiceEndFromStart(); }
+    function wireServiceTime(){
+      var st=document.getElementById('caleditor-start-time');
+      var hs=document.getElementById('caleditor-hours');
+      if(st&&!st.dataset.serviceTimeWired){
+        st.dataset.serviceTimeWired='1';
+        ['input','change','blur','focusout'].forEach(function(ev){ st.addEventListener(ev,syncServiceTime); });
+      }
+      if(hs&&!hs.dataset.serviceTimeWired){
+        hs.dataset.serviceTimeWired='1';
+        ['input','change','blur'].forEach(function(ev){ hs.addEventListener(ev,syncServiceTime); });
+      }
+    }
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',wireServiceTime);
+    else wireServiceTime();
+  })();
 </script>
 
 </body>
