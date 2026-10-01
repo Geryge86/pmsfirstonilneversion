@@ -5596,7 +5596,7 @@ Clean & Press – 5-5×
     var d = new Date();
     return d.getFullYear() + '. ' + HU_MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getDate() + '., ' + HU_DAYS_FULL[d.getDay()];
   }
-  var APP_BUILD = 'PMS-2.0-beta7n5-alosztalypenz-nyugta-fix';
+  var APP_BUILD = 'PMS-2.0-beta7n6-gongyolitett-oraegyenleg';
   var USER_NAME_KEY = 'gery_user_name_v1';
   var userName = 'Felhasználó';
   function cleanUserName(v){ v=String(v||'').trim().replace(/\s+/g,' '); return v.slice(0,32) || 'Felhasználó'; }
@@ -6791,6 +6791,26 @@ Clean & Press – 5-5×
       var wrap=document.createElement('div');wrap.className='cal-activity-icons';var icon=document.createElement('span');icon.className='cal-activity-icon';icon.textContent='🏋️';icon.title=day.workouts.length+' edzés';wrap.appendChild(icon);cell.appendChild(wrap);
     });
   }
+  function calcCalendarMonthWorkBalance(year, month) {
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var planned = 0;
+    for (var d = 1; d <= daysInMonth; d++) {
+      var entry = dayEntry(ymdKey(year, month, d));
+      if (!entry) continue;
+      var hrs = calDayHours(entry);
+      planned += hrs.base;
+      if (entry.type === 'b' && entry.originalHours) planned += Number(entry.originalHours) || 0;
+    }
+    var workCal = getWorkCalendarForYear(year);
+    var official = calcMonthOfficialHours(workCal, year, month);
+    return { planned: planned, official: official.hours, diff: planned - official.hours };
+  }
+  function calcCalendarRollingBalance(year, throughMonth) {
+    var balance = 0;
+    for (var m = 0; m <= throughMonth; m++) balance += calcCalendarMonthWorkBalance(year, m).diff;
+    return balance;
+  }
+
   function renderCalendar() {
     document.getElementById('cal-label').textContent = HU_MONTHS[viewMonth] + ' ' + viewYear + '.';
     var grid = document.getElementById('cal-grid');
@@ -6886,10 +6906,12 @@ Clean & Press – 5-5×
     var workCal = getWorkCalendarForYear(viewYear);
     var official = calcMonthOfficialHours(workCal, viewYear, viewMonth);
     var diff = plannedTotal - official.hours;
+    var rollingBalance = calcCalendarRollingBalance(viewYear, viewMonth);
     var wcHtml = ''
       + '<div class="cal-workcal-line">Hivatalos munkaidőkeret: <b>' + fmtNum(official.hours) + ' óra</b>' + (workCal.status !== 'official' ? ' <span class="cal-workcal-star">*</span>' : '') + ' (' + official.days + ' hivatalos munkanap)</div>'
       + '<div class="cal-workcal-line">Tervezett / teljesített szolgálat: <b>' + fmtNum(plannedTotal) + ' óra</b></div>'
-      + '<div class="cal-workcal-line">Eltérés: <b class="' + (diff < 0 ? 'negative' : 'positive') + '">' + (diff > 0 ? '+' : '') + fmtNum(diff) + ' óra</b></div>'
+      + '<div class="cal-workcal-line">Havi eltérés: <b class="' + (diff < 0 ? 'negative' : 'positive') + '">' + (diff > 0 ? '+' : '') + fmtNum(diff) + ' óra</b></div>'
+      + '<div class="cal-workcal-line"><strong>Göngyölített egyenleg:</strong> <b class="' + (rollingBalance < 0 ? 'negative' : 'positive') + '">' + (rollingBalance > 0 ? '+' : '') + fmtNum(rollingBalance) + ' óra</b></div>'
       + (workCal.status !== 'official' ? '<div class="cal-workcal-footnote">* A ' + viewYear + '-es hivatalos munkanaptár még nincs teljesen frissítve (az áthelyezett munkanapok/pihenőnapok nem ellenőrzöttek).</div>' : '')
       + '<button type="button" id="cal-workcal-link-btn">Munkanaptár adatok</button>';
     document.getElementById('cal-workcal-summary').innerHTML = wcHtml;
