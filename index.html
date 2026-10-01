@@ -4166,6 +4166,11 @@ body.dashboard-light .dash2-daily-box-title,body.dashboard-light .dash2-focus-to
               </div>
             </section>
 
+            <section id="dash2-update-info" class="dash2-panel">
+              <div class="dash2-title-row"><div class="dash2-panel-title">ℹ️ Aktuális frissítés</div><span style="font-size:11px;font-weight:800;opacity:.7">BETA7n8</span></div>
+              <div style="margin-top:9px;font-size:13px;line-height:1.5">Edzésnapló bővítve: <b>🚴 Spinning</b>, <b>🚲 Kerékpár</b> és <b>➕ Egyéb</b> edzéstípussal. A munkaidő-egyenleg továbbra is 4 havi ciklusokban göngyölődik.</div>
+            </section>
+
             <section id="dash2-status-zone">
               <div class="dash2-panel-title">Élő modulok</div>
               <div id="dash-cards"></div>
@@ -4840,7 +4845,7 @@ Clean & Press – 5-5×
     </div>
     <div class="edzesterv-form-grid">
       <div class="full"><label for="edzesterv-f-name">Edzésterv neve</label><input id="edzesterv-f-name" type="text" placeholder="pl. Erő A · felsőtest"></div>
-      <div><label for="edzesterv-f-type">Típus</label><select id="edzesterv-f-type"><option value="eronleti">💪 Erőnléti</option><option value="kettlebell">🏋️ Kettlebell</option><option value="futas">🏃 Futás</option><option value="box">🥊 Box</option><option value="vegyes">⚡ Vegyes</option><option value="egyeb">• Egyéb</option></select></div>
+      <div><label for="edzesterv-f-type">Típus</label><select id="edzesterv-f-type"><option value="eronleti">💪 Erőnléti</option><option value="kettlebell">🏋️ Kettlebell</option><option value="futas">🏃 Futás</option><option value="box">🥊 Box</option><option value="spinning">🚴 Spinning kerékpár</option><option value="kerekpar">🚲 Kerékpár</option><option value="vegyes">⚡ Vegyes</option><option value="egyeb">➕ Egyéb</option></select></div>
       <div><label>Állapot</label><label class="edzesterv-active-row"><input id="edzesterv-f-active" type="checkbox" checked> Aktív terv</label></div>
       <div class="full"><label>Edzésnapok</label><div id="edzesterv-weekdays" class="edzesterv-weekdays">
         <label><input type="checkbox" value="1">H</label><label><input type="checkbox" value="2">K</label><label><input type="checkbox" value="3">Sze</label><label><input type="checkbox" value="4">Cs</label><label><input type="checkbox" value="5">P</label><label><input type="checkbox" value="6">Szo</label><label><input type="checkbox" value="0">V</label>
@@ -4870,6 +4875,9 @@ Clean & Press – 5-5×
       <button type="button" class="caleditor-type-btn" id="edzesitem-type-eronleti" data-type="eronleti">💪 Erőnléti</button>
       <button type="button" class="caleditor-type-btn" id="edzesitem-type-box" data-type="box">🥊 Box</button>
       <button type="button" class="caleditor-type-btn" id="edzesitem-type-alegyseg" data-type="alegyseg">👥 Alegységes</button>
+      <button type="button" class="caleditor-type-btn" id="edzesitem-type-spinning" data-type="spinning">🚴 Spinning</button>
+      <button type="button" class="caleditor-type-btn" id="edzesitem-type-kerekpar" data-type="kerekpar">🚲 Kerékpár</button>
+      <button type="button" class="caleditor-type-btn" id="edzesitem-type-egyeb" data-type="egyeb">➕ Egyéb</button>
     </div>
 
     <div id="edzesitem-fields-kettlebell">
@@ -5025,6 +5033,15 @@ Clean & Press – 5-5×
         <label>Megjegyzés</label>
         <input type="text" id="al-note">
       </div>
+    </div>
+
+    <div id="edzesitem-fields-generic" class="hidden">
+      <div class="caleditor-row"><label>Megnevezés</label><input type="text" id="gn-name" placeholder="pl. Intervall spinning, országúti kör, mobilitás"></div>
+      <div class="caleditor-row"><label>Időtartam (perc)</label><input type="number" id="gn-duration" inputmode="numeric" min="0"></div>
+      <div class="caleditor-row"><label>Táv (km, opcionális)</label><input type="number" id="gn-km" inputmode="decimal" step="0.01" min="0"></div>
+      <div class="caleditor-row"><label>Átlagpulzus (bpm, opcionális)</label><input type="number" id="gn-hr" inputmode="numeric" min="0"></div>
+      <div class="caleditor-row"><label>Kalória (kcal, opcionális)</label><input type="number" id="gn-kcal" inputmode="numeric" min="0"></div>
+      <div class="caleditor-row"><label>Megjegyzés</label><input type="text" id="gn-note"></div>
     </div>
 
     <div class="caleditor-actions">
@@ -5596,7 +5613,7 @@ Clean & Press – 5-5×
     var d = new Date();
     return d.getFullYear() + '. ' + HU_MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getDate() + '., ' + HU_DAYS_FULL[d.getDay()];
   }
-  var APP_BUILD = 'PMS-2.0-beta7n7-4havi-oraegyenleg';
+  var APP_BUILD = 'PMS-2.0-beta7n8-edzesek-infobox';
   var USER_NAME_KEY = 'gery_user_name_v1';
   var userName = 'Felhasználó';
   function cleanUserName(v){ v=String(v||'').trim().replace(/\s+/g,' '); return v.slice(0,32) || 'Felhasználó'; }
@@ -7598,7 +7615,7 @@ Clean & Press – 5-5×
   function shiftEdzesReality(delta){edzesRealityMonth+=delta;if(edzesRealityMonth>11){edzesRealityMonth=0;edzesRealityYear++;}if(edzesRealityMonth<0){edzesRealityMonth=11;edzesRealityYear--;}renderEdzesReality();}
 
   var EDZESTERV_TYPE_META = {
-    eronleti:{icon:'💪',label:'Erőnléti'}, kettlebell:{icon:'🏋️',label:'Kettlebell'}, futas:{icon:'🏃',label:'Futás'}, box:{icon:'🥊',label:'Box'}, vegyes:{icon:'⚡',label:'Vegyes'}, egyeb:{icon:'•',label:'Egyéb'}
+    eronleti:{icon:'💪',label:'Erőnléti'}, kettlebell:{icon:'🏋️',label:'Kettlebell'}, futas:{icon:'🏃',label:'Futás'}, box:{icon:'🥊',label:'Box'}, spinning:{icon:'🚴',label:'Spinning kerékpár'}, kerekpar:{icon:'🚲',label:'Kerékpár'}, vegyes:{icon:'⚡',label:'Vegyes'}, egyeb:{icon:'➕',label:'Egyéb'}
   };
   var EDZESTERV_DAY_LABELS = {1:'H',2:'K',3:'Sze',4:'Cs',5:'P',6:'Szo',0:'V'};
   function saveEdzesTervek(){ try { localStorage.setItem(EDZESTERV_KEY, JSON.stringify(edzesTervek)); markDataChanged(); if(typeof PMSBus!=='undefined')PMSBus.emit('workoutplan:changed',{source:'edzesterv'}); } catch(e){} }
@@ -8583,7 +8600,10 @@ Clean & Press – 5-5×
     futas: { icon: '🏃', label: 'Futás' },
     eronleti: { icon: '💪', label: 'Erőnléti' },
     box: { icon: '🥊', label: 'Box' },
-    alegyseg: { icon: '👥', label: 'Alegységes' }
+    alegyseg: { icon: '👥', label: 'Alegységes' },
+    spinning: { icon: '🚴', label: 'Spinning kerékpár' },
+    kerekpar: { icon: '🚲', label: 'Kerékpár' },
+    egyeb: { icon: '➕', label: 'Egyéb' }
   };
 
   /* PMS 1.9.1 · központi eseménybusz: a modulok nem hívják közvetlenül egymást. */
@@ -9018,10 +9038,11 @@ Clean & Press – 5-5×
   }
   function setEdzesItemType(type, workout) {
     edzesitemType = type;
-    ['kettlebell', 'futas', 'eronleti', 'box', 'alegyseg'].forEach(function (t) {
+    ['kettlebell', 'futas', 'eronleti', 'box', 'alegyseg', 'spinning', 'kerekpar', 'egyeb'].forEach(function (t) {
       document.getElementById('edzesitem-type-' + t).classList.toggle('active', type === t);
-      document.getElementById('edzesitem-fields-' + t).classList.toggle('hidden', type !== t);
+      var f=document.getElementById('edzesitem-fields-' + t); if(f) f.classList.toggle('hidden', type !== t);
     });
+    document.getElementById('edzesitem-fields-generic').classList.toggle('hidden', ['spinning','kerekpar','egyeb'].indexOf(type)<0);
 
     if (type === 'kettlebell') {
       document.getElementById('kb-name').value = (workout && workout.name) || '';
@@ -9053,6 +9074,13 @@ Clean & Press – 5-5×
       document.getElementById('al-hr').value = (workout && workout.hr) || '';
       document.getElementById('al-kcal').value = (workout && workout.kcal) || '';
       document.getElementById('al-note').value = (workout && workout.note) || '';
+    } else if (type === 'spinning' || type === 'kerekpar' || type === 'egyeb') {
+      document.getElementById('gn-name').value = (workout && workout.name) || '';
+      document.getElementById('gn-duration').value = (workout && workout.duration) || '';
+      document.getElementById('gn-km').value = (workout && workout.km) || '';
+      document.getElementById('gn-hr').value = (workout && workout.hr) || '';
+      document.getElementById('gn-kcal').value = (workout && workout.kcal) || '';
+      document.getElementById('gn-note').value = (workout && workout.note) || '';
     } else {
       document.getElementById('fu-km').value = (workout && workout.km) || '';
       var sec = (workout && workout.timeSec) || 0;
@@ -9124,6 +9152,16 @@ Clean & Press – 5-5×
         hr: parseInt(document.getElementById('al-hr').value, 10) || 0,
         kcal: parseFloat(document.getElementById('al-kcal').value) || 0,
         note: document.getElementById('al-note').value.trim()
+      };
+    } else if (edzesitemType === 'spinning' || edzesitemType === 'kerekpar' || edzesitemType === 'egyeb') {
+      data = {
+        id: edzesitemId || uid('ed'), type: edzesitemType,
+        name: document.getElementById('gn-name').value.trim(),
+        duration: parseFloat(document.getElementById('gn-duration').value) || 0,
+        km: parseFloat(document.getElementById('gn-km').value) || 0,
+        hr: parseInt(document.getElementById('gn-hr').value, 10) || 0,
+        kcal: parseFloat(document.getElementById('gn-kcal').value) || 0,
+        note: document.getElementById('gn-note').value.trim()
       };
     } else {
       var min = parseInt(document.getElementById('fu-min').value, 10) || 0;
@@ -15147,6 +15185,9 @@ function renderDashboard() {
       document.getElementById('edzesitem-type-eronleti').addEventListener('click', function () { setEdzesItemType('eronleti', null); });
       document.getElementById('edzesitem-type-box').addEventListener('click', function () { setEdzesItemType('box', null); });
       document.getElementById('edzesitem-type-alegyseg').addEventListener('click', function () { setEdzesItemType('alegyseg', null); });
+      document.getElementById('edzesitem-type-spinning').addEventListener('click', function () { setEdzesItemType('spinning', null); });
+      document.getElementById('edzesitem-type-kerekpar').addEventListener('click', function () { setEdzesItemType('kerekpar', null); });
+      document.getElementById('edzesitem-type-egyeb').addEventListener('click', function () { setEdzesItemType('egyeb', null); });
       ['fu-km', 'fu-min', 'fu-sec'].forEach(function (id) {
         document.getElementById(id).addEventListener('input', updateFutasPaceDisplay);
       });
