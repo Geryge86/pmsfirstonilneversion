@@ -5596,7 +5596,7 @@ Clean & Press – 5-5×
     var d = new Date();
     return d.getFullYear() + '. ' + HU_MONTHS[d.getMonth()].toLowerCase() + ' ' + d.getDate() + '., ' + HU_DAYS_FULL[d.getDay()];
   }
-  var APP_BUILD = 'PMS-2.0-beta7n6-gongyolitett-oraegyenleg';
+  var APP_BUILD = 'PMS-2.0-beta7n7-4havi-oraegyenleg';
   var USER_NAME_KEY = 'gery_user_name_v1';
   var userName = 'Felhasználó';
   function cleanUserName(v){ v=String(v||'').trim().replace(/\s+/g,' '); return v.slice(0,32) || 'Felhasználó'; }
@@ -6806,8 +6806,13 @@ Clean & Press – 5-5×
     return { planned: planned, official: official.hours, diff: planned - official.hours };
   }
   function calcCalendarRollingBalance(year, throughMonth) {
+    // A munkaidő-egyenleg 4 havi elszámolási blokkokban nullázódik:
+    // jan–ápr, máj–aug, szept–dec. Csak az aktuális blokk hónapjai számítanak.
+    var blockStartMonth = Math.floor(throughMonth / 4) * 4;
     var balance = 0;
-    for (var m = 0; m <= throughMonth; m++) balance += calcCalendarMonthWorkBalance(year, m).diff;
+    for (var m = blockStartMonth; m <= throughMonth; m++) {
+      balance += calcCalendarMonthWorkBalance(year, m).diff;
+    }
     return balance;
   }
 
