@@ -852,9 +852,10 @@ header .app-version{font-size:12px;font-weight:600;color:rgba(255,255,255,.65);m
 }
 
 @media print{
-  body *{visibility:hidden;}
-  #app-print-area,#app-print-area *{visibility:visible;}
-  #app-print-area{display:block;position:absolute;left:0;top:0;width:100%;padding:14px;}
+  /* BETA7n10 · egységes nyomtatás: csak a központi nyomtatási terület kerül papírra */
+  html,body,body.pms-printing{height:auto!important;min-height:0!important;overflow:visible!important;background:#fff!important}
+  body.pms-printing>*:not(#app-print-area){display:none!important}
+  body.pms-printing #app-print-area{display:block!important;position:static!important;width:auto!important;padding:14px;color:#10243e;background:#fff}
 }
 
 
@@ -1547,7 +1548,24 @@ body.edzestar-view-open{overflow:hidden}
 .note-budget-summary{display:flex;gap:8px;flex-wrap:wrap}.note-budget-pill{background:#fff;border:1px solid #d7e2ec;border-radius:10px;padding:8px 10px;font-size:10px}.note-budget-pill b{font-size:12px;color:var(--kr-navy)}
 .note-reader-budget{margin:0 22px 18px;border:1px solid #d9e2ea;border-radius:14px;padding:12px;background:#fafbfd}.note-reader-budget.hidden{display:none}.note-reader-budget h3{margin:0 0 9px;font-size:13px}.note-reader-budget table{width:100%;border-collapse:collapse;font-size:10px}.note-reader-budget th,.note-reader-budget td{padding:7px 5px;border-bottom:1px solid #e4e9ee;text-align:left}.note-reader-budget th:nth-child(n+2),.note-reader-budget td:nth-child(n+2){text-align:right}.note-reader-budget-total{margin-top:9px;display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap;font-size:10px}.note-reader-budget-total b{font-size:12px}
 @media(max-width:600px){.note-budget-row{grid-template-columns:minmax(0,1fr) 92px 36px}.note-budget-row .note-actual{grid-column:1/3}.note-reader-budget{margin:0 16px 16px}.notes-reader-actions{flex-wrap:wrap}}
-@media print{body.note-printing>*:not(#notes-reader){display:none!important}body.note-printing #notes-reader{display:block!important;position:static!important}body.note-printing .notes-reader-backdrop,body.note-printing .notes-reader-close,body.note-printing .notes-reader-actions{display:none!important}body.note-printing .notes-reader-sheet{position:static!important;inset:auto!important;box-shadow:none!important;border:0!important;overflow:visible!important}body.note-printing .notes-reader-body{overflow:visible!important}body.note-printing .note-reader-budget{break-inside:avoid}}
+/* BETA7n10 · jegyzet nyomtatási kép (a központi nyomtatási területen) */
+.np-note{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#10243e}
+.np-note .np-kicker{font-size:9px;font-weight:800;letter-spacing:.12em;color:#6b7c8f;text-transform:uppercase}
+.np-note h1{font-size:22px;margin:4px 0 14px;padding-bottom:8px;border-bottom:2px solid #14253d}
+.np-note .np-body{font-size:12.5px;line-height:1.6;overflow-wrap:anywhere}
+.np-note .np-body mark{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.np-note .np-check{margin-top:14px}.np-note .np-check div{font-size:12px;padding:3px 0}.np-note .np-check .done{text-decoration:line-through;color:#6b7c8f}
+.np-note .np-budget{margin-top:16px;break-inside:avoid}.np-note .np-budget h3{font-size:13px;margin:0 0 8px}
+.np-note .np-budget table{width:100%;border-collapse:collapse;font-size:11px}.np-note .np-budget th,.np-note .np-budget td{border-bottom:1px solid #d7dee6;padding:6px 5px;text-align:left}
+.np-note .np-budget th:nth-child(n+2),.np-note .np-budget td:nth-child(n+2){text-align:right}
+.np-note .np-budget-total{margin-top:8px;display:flex;justify-content:flex-end;gap:14px;flex-wrap:wrap;font-size:11px}
+.np-note .np-foot{margin-top:18px;padding-top:6px;border-top:1px solid #d7dee6;font-size:9px;color:#7a848d;display:flex;justify-content:space-between}
+/* BETA7n10 · jegyzetszerkesztő görgethető, így a költségtervező minden tétele elérhető */
+#note-modal .modal-card{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#note-modal .editor-topbar{position:sticky;top:0;z-index:3;background:var(--white)}
+#note-modal .editor-body-textarea{flex:1 0 180px;min-height:180px}
+#note-modal .editor-checklist-section{max-height:none;overflow:visible}
+#note-modal .note-budget-box{margin:16px 14px calc(18px + env(safe-area-inset-bottom))}
 
 /* PMS 1.6.3 · Jegyzet Olvasómód javítás */
 .note-card-read{
@@ -4177,8 +4195,8 @@ body.dashboard-light .dash2-daily-box-title,body.dashboard-light .dash2-focus-to
             </section>
 
             <section id="dash2-update-info" class="dash2-panel">
-              <div class="dash2-title-row"><div class="dash2-panel-title">ℹ️ Aktuális frissítés</div><span style="font-size:11px;font-weight:800;opacity:.7">BETA7n8</span></div>
-              <div style="margin-top:9px;font-size:13px;line-height:1.5">Edzésnapló bővítve: <b>🚴 Spinning</b>, <b>🚲 Kerékpár</b> és <b>➕ Egyéb</b> edzéstípussal. A munkaidő-egyenleg továbbra is 4 havi ciklusokban göngyölődik.</div>
+              <div class="dash2-title-row"><div class="dash2-panel-title">ℹ️ Aktuális frissítés</div><span style="font-size:11px;font-weight:800;opacity:.7">BETA7n10</span></div>
+              <div style="margin-top:9px;font-size:13px;line-height:1.5">Egységes nyomtatás/PDF minden modulban, a <b>jegyzet nyomtatása</b> már működik. A jegyzet <b>költségtervezőjébe</b> tetszőleges számú tétel felvehető.</div>
             </section>
 
             <section id="dash2-status-zone">
@@ -6305,7 +6323,12 @@ Clean & Press – 5-5×
     var sum=document.getElementById('note-budget-summary'); if(!sum)return; var t=noteBudgetTotals(draftNoteBudget);
     sum.innerHTML='<div class="note-budget-pill">Tervezett<br><b>'+moneyHu(t.planned)+'</b></div>'+(t.hasActual?'<div class="note-budget-pill">Tényleges<br><b>'+moneyHu(t.actual)+'</b></div><div class="note-budget-pill">Különbség<br><b>'+moneyHu(t.diff)+'</b></div>':'');
   }
-  function addNoteBudgetRow(){ draftNoteBudget.push({id:uid('nb'),name:'',planned:'',actual:''}); renderNoteBudgetEditor(); }
+  function addNoteBudgetRow(){
+    draftNoteBudget.push({id:uid('nb'),name:'',planned:'',actual:''}); renderNoteBudgetEditor();
+    /* BETA7n10 · az új tétel látható és rögtön írható */
+    var rows=document.querySelectorAll('#note-budget-rows .note-budget-row'), last=rows[rows.length-1];
+    if(last){ var inp=last.querySelector('.note-budget-name'); try{ last.scrollIntoView({block:'center',behavior:'smooth'}); }catch(e){ last.scrollIntoView(); } if(inp){ try{inp.focus({preventScroll:true});}catch(e){inp.focus();} } }
+  }
   function renderNoteReaderBudget(note){
     var box=document.getElementById('notes-reader-budget'); if(!box)return; var rows=(note&&note.budget&&Array.isArray(note.budget.items))?note.budget.items:[]; var enabled=!!(note&&note.budget&&note.budget.enabled);
     if(!enabled){box.classList.add('hidden');box.innerHTML='';return;} box.classList.remove('hidden'); var t=noteBudgetTotals(rows);
@@ -6313,7 +6336,21 @@ Clean & Press – 5-5×
     if(rows.length){html+='<table><thead><tr><th>Tétel</th><th>Tervezett</th><th>Tényleges</th></tr></thead><tbody>'; rows.forEach(function(r){html+='<tr><td>'+escapeHtml(r.name||'Névtelen tétel')+'</td><td>'+moneyHu(r.planned)+'</td><td>'+(r.actual!==''&&r.actual!=null?moneyHu(r.actual):'—')+'</td></tr>';}); html+='</tbody></table>';} else html+='<div style="color:#68798b">Még nincs felvett kiadás.</div>';
     html+='<div class="note-reader-budget-total"><span>Tervezett: <b>'+moneyHu(t.planned)+'</b></span>'+(t.hasActual?'<span>Tényleges: <b>'+moneyHu(t.actual)+'</b></span><span>Különbség: <b>'+moneyHu(t.diff)+'</b></span>':'')+'</div>'; box.innerHTML=html;
   }
-  function printCurrentNote(){ document.body.classList.add('note-printing'); setTimeout(function(){window.print();setTimeout(function(){document.body.classList.remove('note-printing');},300);},60); }
+  function printCurrentNote(){
+    /* BETA7n10 · a jegyzet az egységes nyomtatási területen keresztül nyomtatódik (korábban üres oldal lett). */
+    var title=(document.getElementById('notes-reader-title')||{}).textContent||'Jegyzet';
+    var body=(document.getElementById('notes-reader-body')||{}).innerHTML||'';
+    var html='<div class="np-note"><div class="np-kicker">PMS · Jegyzet</div><h1>'+escapeHtml(title)+'</h1>';
+    if(String(body).replace(/<[^>]*>/g,'').trim())html+='<div class="np-body">'+body+'</div>';
+    var items=Array.prototype.slice.call(document.querySelectorAll('#notes-reader-checklist .notes-reader-checkitem'));
+    if(items.length){html+='<div class="np-check">'+items.map(function(r){return '<div class="'+(r.classList.contains('done')?'done':'')+'">'+escapeHtml(Array.prototype.map.call(r.children,function(c){return c.textContent;}).join(' '))+'</div>';}).join('')+'</div>';}
+    var bud=document.getElementById('notes-reader-budget');
+    if(bud&&!bud.classList.contains('hidden')&&bud.innerHTML.trim()){
+      html+='<div class="np-budget">'+bud.innerHTML.replace(/note-reader-budget-total/g,'np-budget-total')+'</div>';
+    }
+    html+='<div class="np-foot"><span>GeryGe PMS · Jegyzetek</span><span>Nyomtatva: '+escapeHtml(new Date().toLocaleString('hu-HU'))+'</span></div></div>';
+    pmsPrintArea(html);
+  }
   function showNoteModal() { document.getElementById('note-modal').classList.remove('hidden'); setTimeout(function () { document.getElementById('f-title').focus(); }, 50); }
   function hideNoteModal() { document.getElementById('note-modal').classList.add('hidden'); editingId = null; draftChecklist = []; draftNoteBudgetEnabled=false; draftNoteBudget=[]; }
 
@@ -8056,8 +8093,7 @@ Clean & Press – 5-5×
     html+='<section class="pp-print-card blue"><h3>⚠️ LEHETSÉGES AKADÁLYOK</h3><div class="body">'+ppPrintText(p.challenges,'Nincs megadva')+'</div></section>';
     html+='<section class="pp-print-card green"><h3>💡 JEGYZETEK / ÖTLETEK</h3><div class="body">'+ppPrintText(p.notes,'Nincs megadva')+'</div></section>';
     html+='</div><div class="pp-print-footer"><span>GeryGe PMS · Projekttervező</span><span>'+escapeHtml(p.title)+'</span></div></div>';
-    document.getElementById('app-print-area').innerHTML=html;
-    window.print();
+    pmsPrintArea(html);
   }
 
   // ============ IDŐBLOKKOLÓ ============
@@ -8355,7 +8391,7 @@ Clean & Press – 5-5×
       return tr([x.date||'',x.item||'',kkMoney(+x.price||0),state,kkPauseCountdownText(x.createdAt)]);
     }).join('');
 
-    area.innerHTML=
+    var kkHtml=
       '<div class="kk-print-journal">'+
         '<div class="kp-head"><h1>Kakeibo havi napló</h1><p>'+escapeHtml(month)+' · Generálva: '+escapeHtml(new Date().toLocaleString('hu-HU'))+'</p></div>'+
         '<div class="kp-summary">'+
@@ -8383,7 +8419,7 @@ Clean & Press – 5-5×
         '</div>'+
         '<div class="kp-foot">PMS · Kakeibo havi pénzügyi napló</div>'+
       '</div>';
-    window.print();
+    pmsPrintArea(kkHtml);
   }
 
   var kkAutosaveTimer=null;
@@ -9017,6 +9053,27 @@ Clean & Press – 5-5×
     });
     return stats;
   }
+  /* BETA7n10 · központi nyomtatás: minden oldalon belüli nyomtatás ezen megy át,
+     így a modulok nem ütik egymást (nem marad bent régi tartalom, nem lesz üres oldal). */
+  var pmsPrintCleanupTimer=null;
+  function pmsPrintCleanup(){
+    clearTimeout(pmsPrintCleanupTimer); pmsPrintCleanupTimer=null;
+    document.body.classList.remove('pms-printing');
+    var area=document.getElementById('app-print-area'); if(area)area.innerHTML='';
+  }
+  window.addEventListener('afterprint',function(){ setTimeout(pmsPrintCleanup,250); });
+  function pmsPrintArea(bodyHtml,css){
+    var area=document.getElementById('app-print-area'); if(!area)return false;
+    clearTimeout(pmsPrintCleanupTimer);
+    area.innerHTML=(css?'<style>'+css+'</style>':'')+bodyHtml;
+    document.body.classList.add('pms-printing');
+    setTimeout(function(){
+      try{window.print();}catch(e){}
+      /* Tartalék takarítás, ha a böngésző nem küld afterprint eseményt. */
+      pmsPrintCleanupTimer=setTimeout(pmsPrintCleanup,60000);
+    },60);
+    return true;
+  }
   function pmsPrintHtml(title,bodyHtml){
     var css='body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Arial,sans-serif;color:#10243e;padding:20px;margin:0}.ep-toolbar{position:sticky;top:0;z-index:10;display:flex;gap:10px;justify-content:space-between;align-items:center;background:#fff;border-bottom:1px solid #ccd8e5;padding:12px 0 14px;margin-bottom:18px}.ep-btn{appearance:none;border:1px solid #b8c9da;background:#fff;color:#10243e;border-radius:12px;padding:11px 14px;font:700 14px inherit}.ep-btn.primary{background:#10243e;color:#fff}.ep-title{font-size:24px;font-weight:800;margin-bottom:5px}.ep-subtitle{color:#667b93;margin-bottom:18px}.ep-table{width:100%;border-collapse:collapse;font-size:12px}.ep-table th,.ep-table td{border:1px solid #ccd8e5;padding:7px;vertical-align:top;text-align:left}.ep-table th{background:#eef4fa}.ep-summary-title{font-size:18px;font-weight:800;margin-top:18px}.ep-summary-line{margin:5px 0}@page{size:A4 portrait;margin:12mm}@media print{body{padding:0}.ep-toolbar{display:none!important}}';
     try{
@@ -9028,8 +9085,7 @@ Clean & Press – 5-5×
       }
     }catch(e){}
     /* Popup-blokkolás esetén ugyanazon oldalas nyomtatás marad tartalék. */
-    var area=document.getElementById('app-print-area'); if(area)area.innerHTML=bodyHtml;
-    setTimeout(function(){window.print();},50); return false;
+    pmsPrintArea(bodyHtml, css.replace(/(^|[{}])\s*body\{/g,'$1#app-print-area{')); return false;
   }
   function exportEdzesPdf() {
     var year = edzesViewYear, month = edzesViewMonth;
@@ -13995,8 +14051,7 @@ function renderDashboard() {
       var chartCat = catEntries.slice(0, 6).map(function (c, i) { return { label: c.name, value: c.amount, color: palette[i % palette.length] }; });
       html += '<div style="max-width:400px;">' + svgBarChart(chartCat) + '</div>';
     }
-    document.getElementById('app-print-area').innerHTML = html;
-    window.print();
+    pmsPrintArea(html);
   }
   function printFinanceYear() {
     var yearData = calculateFinanceYear(finYearViewYear);
@@ -14038,8 +14093,7 @@ function renderDashboard() {
     html += '<div style="max-width:420px;">' + svgLineChart(expensePoints, { width: 380, height: 130, color: '#b3261e' }) + '</div>';
     html += '<div style="max-width:420px;">' + svgLineChart(ratePoints, { width: 380, height: 130, color: '#14253d' }) + '</div>';
     html += '<div style="max-width:420px;">' + svgLineChart(fixPoints, { width: 380, height: 130, color: '#c98a00' }) + '</div>';
-    document.getElementById('app-print-area').innerHTML = html;
-    window.print();
+    pmsPrintArea(html);
   }
 
   // ============ NAPI TERVEZŐ ============
