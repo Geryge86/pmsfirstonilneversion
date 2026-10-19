@@ -1548,6 +1548,67 @@ body.edzestar-view-open{overflow:hidden}
 .note-budget-summary{display:flex;gap:8px;flex-wrap:wrap}.note-budget-pill{background:#fff;border:1px solid #d7e2ec;border-radius:10px;padding:8px 10px;font-size:10px}.note-budget-pill b{font-size:12px;color:var(--kr-navy)}
 .note-reader-budget{margin:0 22px 18px;border:1px solid #d9e2ea;border-radius:14px;padding:12px;background:#fafbfd}.note-reader-budget.hidden{display:none}.note-reader-budget h3{margin:0 0 9px;font-size:13px}.note-reader-budget table{width:100%;border-collapse:collapse;font-size:10px}.note-reader-budget th,.note-reader-budget td{padding:7px 5px;border-bottom:1px solid #e4e9ee;text-align:left}.note-reader-budget th:nth-child(n+2),.note-reader-budget td:nth-child(n+2){text-align:right}.note-reader-budget-total{margin-top:9px;display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap;font-size:10px}.note-reader-budget-total b{font-size:12px}
 @media(max-width:600px){.note-budget-row{grid-template-columns:minmax(0,1fr) 92px 36px}.note-budget-row .note-actual{grid-column:1/3}.note-reader-budget{margin:0 16px 16px}.notes-reader-actions{flex-wrap:wrap}}
+/* BETA7n13 · Gépjármű-karbantartás átszervezve */
+.gk-ov{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.gk-ov-tile{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:10px 11px;min-width:0}
+.gk-ov-tile small{display:block;font-size:10px;font-weight:800;letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+.gk-ov-tile b{display:block;font-size:16px;color:var(--text);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gk-ov-tile span{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.gk-ov-tile.level-soon{border-color:#e9b949;background:#fff8e6}.gk-ov-tile.level-soon span{color:#8a5a00}
+.gk-ov-tile.level-overdue{border-color:#e07a7a;background:#fdeeee}.gk-ov-tile.level-overdue span{color:#a1261e;font-weight:800}
+.gk-ov-head{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:2px 2px 4px}
+.gk-ov-head b{font-size:20px;color:var(--text);letter-spacing:.02em}.gk-ov-head span{font-size:12px;color:var(--muted)}
+.gk-act-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.gk-act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:74px;border-radius:14px;border:1px solid var(--border);background:var(--white);color:var(--kr-navy);font-size:14px;font-weight:850;cursor:pointer}
+.gk-act span{font-size:24px}.gk-act-fuel{background:#eef6ff;border-color:#c8dcf2}.gk-act-service{background:#fff4ea;border-color:#f0d3b4}
+.gk-act:disabled{opacity:.45}
+.gk-new-hint{font-size:12px;line-height:1.45;color:var(--muted);background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:10px;margin:-4px 0 12px}
+.gk-sec{margin-bottom:12px}.gk-sec-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.gk-sec-head h3{margin:0;font-size:14px;color:var(--text)}
+.gk-filter{display:flex;gap:4px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:3px}
+.gk-filter button{border:0;background:transparent;color:var(--muted);font-size:11px;font-weight:800;padding:6px 9px;border-radius:7px;cursor:pointer}.gk-filter button.active{background:var(--white);color:var(--kr-navy);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.gk-log-month{display:flex;justify-content:space-between;gap:8px;font-size:11px;font-weight:850;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin:12px 2px 6px}
+.gk-log-row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:10px 11px;margin-bottom:6px;cursor:pointer;color:var(--text);font:inherit}
+.gk-log-ic{flex:0 0 34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:17px;background:#eef6ff}.gk-log-row.service .gk-log-ic{background:#fff4ea}
+.gk-log-main{flex:1;min-width:0}.gk-log-main b{display:block;font-size:13.5px}.gk-log-main>span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:11.5px;color:var(--muted);margin-top:2px;overflow:hidden;overflow-wrap:anywhere}
+.gk-log-amt{flex:0 0 auto;text-align:right;font-size:13.5px;font-weight:850;white-space:nowrap}.gk-log-amt small{display:block;font-size:10px;font-weight:700;color:var(--muted)}
+.gk-log-empty{font-size:12.5px;color:var(--muted);text-align:center;padding:18px 10px;background:var(--bg);border-radius:12px}
+.gk-tag{display:inline-block;margin-left:5px;padding:1px 6px;border-radius:999px;font-size:9px;font-weight:900;vertical-align:1px;background:#e8f5ed;color:#28724e}.gk-tag.part{background:#f1f3f5;color:#69727a}.gk-tag.warn{background:#fff1d6;color:#8a5a00}
+.gk-details{border:1px solid var(--border);border-radius:12px;background:var(--white)}
+.gk-details>summary{list-style:none;cursor:pointer;padding:12px 13px;font-size:13.5px;font-weight:850;color:var(--text)}.gk-details>summary::-webkit-details-marker{display:none}
+.gk-details>summary::after{content:'▾';float:right;color:var(--muted)}.gk-details[open]>summary::after{content:'▴'}
+.gk-details-body{padding:0 13px 13px}
+.gk-stat-title{font-size:12.5px;font-weight:850;color:var(--text);margin:12px 0 2px}
+.gk-del-in{margin-top:16px;width:100%}
+.gk-cat-row{display:flex;justify-content:space-between;font-size:12.5px;padding:6px 2px;border-bottom:1px solid var(--border)}
+.gk-sheet{position:fixed;inset:0;z-index:1500;display:flex;align-items:flex-end;justify-content:center}
+.gk-sheet.hidden{display:none}
+.gk-sheet-backdrop{position:absolute;inset:0;background:rgba(8,18,29,.5)}
+.gk-sheet-card{position:relative;width:100%;max-width:520px;max-height:92dvh;display:flex;flex-direction:column;background:var(--white);border-radius:20px 20px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.25);padding-bottom:env(safe-area-inset-bottom)}
+@media(min-width:700px){.gk-sheet{align-items:center}.gk-sheet-card{border-radius:20px}}
+.gk-sheet-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px}.gk-sheet-head h3{margin:0;font-size:17px;color:var(--text)}
+.gk-sheet-x{border:0;background:var(--bg);color:var(--text);width:34px;height:34px;border-radius:50%;font-size:14px;cursor:pointer}
+.gk-sheet-body{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 16px 10px}
+.gk-sheet-body label{display:block;font-size:11px;font-weight:800;color:var(--muted);margin:10px 0 4px}
+.gk-sheet-body input[type=text],.gk-sheet-body input[type=number],.gk-sheet-body input[type=date]{width:100%;box-sizing:border-box}
+.gk-grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.gk-e-hint{font-size:11px;color:var(--muted);margin-top:4px;min-height:14px}.gk-e-hint.warn{color:#a1261e;font-weight:800}
+.gk-e-unit{font-size:12px;font-weight:800;color:var(--kr-navy);margin-top:6px;min-height:16px}
+.gk-switch{display:grid!important;grid-template-columns:auto 1fr;gap:2px 9px;align-items:center;margin-top:12px!important;padding:10px 11px;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text)!important;font-size:13px!important}
+.gk-switch input{width:20px;height:20px;grid-row:1/3}.gk-switch span{font-weight:850}.gk-switch small{font-size:10.5px;font-weight:600;color:var(--muted)}
+.gk-cat-chips{display:flex;flex-wrap:wrap;gap:6px}
+.gk-cat-chips button{border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:999px;padding:8px 11px;font-size:12.5px;font-weight:800;cursor:pointer}
+.gk-cat-chips button.active{background:var(--kr-navy);border-color:var(--kr-navy);color:#fff}
+.gk-sheet-actions{display:flex;gap:8px;justify-content:flex-end;padding:10px 16px 14px;border-top:1px solid var(--border)}
+.gk-sheet-actions .gk-e-del{margin-right:auto;color:var(--kr-bordo)}
+/* BETA7n12 · olvasómód: szöveg + teendők + költségvetés együtt görgethető */
+.notes-reader-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y pinch-zoom}
+.notes-reader-scroll .notes-reader-body{flex:none;min-height:0;overflow:visible}
+.notes-reader-head,.notes-reader-actions{flex:0 0 auto}
+.nrb-sum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0 0 10px}
+.nrb-sum div{background:#fff;border:1px solid #dfe6ed;border-radius:10px;padding:7px 9px;font-size:10px;color:#5d6f82}
+.nrb-sum b{display:block;font-size:13px;color:#10243e;margin-top:2px}
+.nrb-sum .neg b{color:#b3261e}.nrb-sum .pos b{color:#1e7d3c}
+.nrb-count{font-size:10px;color:#6b7c8f;margin:-4px 0 8px}
 /* BETA7n11 · telefonos PDF-készítő */
 #pms-pdf-stage{position:absolute;left:0;top:0;width:794px;z-index:-1;pointer-events:none;background:#fff}
 #pms-pdf-page{width:794px;box-sizing:border-box;padding:30px 32px;background:#fff;color:#10243e;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
@@ -4207,8 +4268,8 @@ body.dashboard-light .dash2-daily-box-title,body.dashboard-light .dash2-focus-to
             </section>
 
             <section id="dash2-update-info" class="dash2-panel">
-              <div class="dash2-title-row"><div class="dash2-panel-title">ℹ️ Aktuális frissítés</div><span style="font-size:11px;font-weight:800;opacity:.7">BETA7n11</span></div>
-              <div style="margin-top:9px;font-size:13px;line-height:1.5"><b>Telefonon</b> a nyomtatás gombok valódi PDF-et készítenek (Megosztás → Nyomtatás / Mentés a Fájlokba). Egységes nyomtatás/PDF minden modulban, a <b>jegyzet nyomtatása</b> már működik. A jegyzet <b>költségtervezőjébe</b> tetszőleges számú tétel felvehető.</div>
+              <div class="dash2-title-row"><div class="dash2-panel-title">ℹ️ Aktuális frissítés</div><span style="font-size:11px;font-weight:800;opacity:.7">BETA7n13</span></div>
+              <div style="margin-top:9px;font-size:13px;line-height:1.5"><b>Autók:</b> új áttekintő, külön ⛽ Tankolás és 🔧 Szerelés felvitel (azonnal ment, utólag javítható), havi napló. Jegyzet olvasómód: a szöveg, a teendők és a hosszú költségvetés együtt görgethető. <b>Telefonon</b> a nyomtatás gombok valódi PDF-et készítenek (Megosztás → Nyomtatás / Mentés a Fájlokba). Egységes nyomtatás/PDF minden modulban, a <b>jegyzet nyomtatása</b> már működik. A jegyzet <b>költségtervezőjébe</b> tetszőleges számú tétel felvehető.</div>
             </section>
 
             <section id="dash2-status-zone">
@@ -4383,7 +4444,39 @@ body.dashboard-light .dash2-daily-box-title,body.dashboard-light .dash2-focus-to
     </div>
 
     <div class="gk-form-scroll">
-      <label>Rendszám</label>
+      <!-- BETA7n13 · átszervezett gépjármű-oldal -->
+      <div id="gk-overview" class="gk-ov"></div>
+      <div class="gk-act-row">
+        <button type="button" id="gk-act-fuel" class="gk-act gk-act-fuel"><span>⛽</span>Tankolás</button>
+        <button type="button" id="gk-act-service" class="gk-act gk-act-service"><span>🔧</span>Szerelés / szerviz</button>
+      </div>
+      <div id="gk-new-hint" class="gk-new-hint hidden">Új járműnél előbb add meg az adatokat lent, majd nyomj a <b>Mentés</b>re. Utána a tankolás és szerelés azonnal mentődik.</div>
+      <section class="gk-sec">
+        <div class="gk-sec-head"><h3>Napló</h3>
+          <div class="gk-filter" id="gk-log-filter"><button type="button" data-gk-filter="all" class="active">Mind</button><button type="button" data-gk-filter="fuel">Tankolás</button><button type="button" data-gk-filter="service">Szerelés</button></div>
+        </div>
+        <div id="gk-log"></div>
+      </section>
+      <details class="gk-sec gk-details" id="gk-stats-sec"><summary>📊 Statisztika</summary><div class="gk-details-body">
+        <div id="gk-cat-summary"></div>
+        <div class="gk-stat-title">🔧 Szerelés / szerviz költések</div>
+      <div class="gk-total-line" id="gk-cost-total"></div>
+      <button type="button" id="gk-cost-monthly-toggle" class="gk-summary-toggle hidden"></button>
+      <div id="gk-cost-monthly" class="gk-summary-list hidden"></div>
+      <button type="button" id="gk-cost-yearly-toggle" class="gk-summary-toggle hidden"></button>
+      <div id="gk-cost-yearly" class="gk-summary-list hidden"></div>
+      
+        <div class="gk-stat-title">⛽ Tankolások</div>
+      <div class="gk-total-line" id="gk-fuel-total"></div>
+      <div class="gk-total-line" id="gk-fuel-consumption"></div>
+      <button type="button" id="gk-fuel-monthly-toggle" class="gk-summary-toggle hidden"></button>
+      <div id="gk-fuel-monthly" class="gk-summary-list hidden"></div>
+      <button type="button" id="gk-fuel-yearly-toggle" class="gk-summary-toggle hidden"></button>
+      <div id="gk-fuel-yearly" class="gk-summary-list hidden"></div>
+      
+      </div></details>
+      <details class="gk-sec gk-details" id="gk-data-sec"><summary>⚙️ Jármű adatai</summary><div class="gk-details-body">
+        <label>Rendszám</label>
       <input type="text" id="gk-f-rendszam" placeholder="pl. ABC-123" style="text-transform:uppercase">
 
       <label>Típus</label>
@@ -4412,13 +4505,11 @@ body.dashboard-light .dash2-daily-box-title,body.dashboard-light .dash2-focus-to
       <input type="date" id="gk-f-biztositas">
       <div id="gk-biztositas-status" class="gk-oil-status"></div>
 
-      <label>Költések</label>
-      <div class="gk-total-line" id="gk-cost-total"></div>
-      <button type="button" id="gk-cost-monthly-toggle" class="gk-summary-toggle hidden"></button>
-      <div id="gk-cost-monthly" class="gk-summary-list hidden"></div>
-      <button type="button" id="gk-cost-yearly-toggle" class="gk-summary-toggle hidden"></button>
-      <div id="gk-cost-yearly" class="gk-summary-list hidden"></div>
-      <div id="gk-cost-items"></div>
+      
+        <button type="button" id="gk-btn-delete" class="btn-delete-full gk-del-in hidden">Gépjármű törlése</button>
+      </div></details>
+      <div class="hidden" aria-hidden="true">
+        <div id="gk-cost-items"></div>
       <div class="gk-entry-form">
         <input type="date" id="gk-f-cost-date">
         <input type="text" id="gk-f-cost-desc" placeholder="Leírás (pl. fékbetét csere)">
@@ -4428,14 +4519,8 @@ body.dashboard-light .dash2-daily-box-title,body.dashboard-light .dash2-focus-to
         </div>
       </div>
 
-      <label>Tankolások</label>
-      <div class="gk-total-line" id="gk-fuel-total"></div>
-      <div class="gk-total-line" id="gk-fuel-consumption"></div>
-      <button type="button" id="gk-fuel-monthly-toggle" class="gk-summary-toggle hidden"></button>
-      <div id="gk-fuel-monthly" class="gk-summary-list hidden"></div>
-      <button type="button" id="gk-fuel-yearly-toggle" class="gk-summary-toggle hidden"></button>
-      <div id="gk-fuel-yearly" class="gk-summary-list hidden"></div>
-      <div id="gk-fuel-items"></div>
+      
+        <div id="gk-fuel-items"></div>
       <div class="gk-entry-form">
         <input type="date" id="gk-f-fuel-date">
         <input type="number" id="gk-f-fuel-km" inputmode="numeric" min="0" placeholder="Km óra állás tankoláskor">
@@ -4448,7 +4533,46 @@ body.dashboard-light .dash2-daily-box-title,body.dashboard-light .dash2-focus-to
       </div>
     </div>
 
-    <button type="button" id="gk-btn-delete" class="btn-delete-full hidden">Gépjármű törlése</button>
+    
+      </div>
+
+  </div>
+</div>
+
+<!-- BETA7n13 · Tankolás / Szerelés felviteli ablak -->
+<div id="gk-entry-sheet" class="gk-sheet hidden" aria-hidden="true">
+  <div class="gk-sheet-backdrop" data-gk-sheet-close></div>
+  <div class="gk-sheet-card">
+    <div class="gk-sheet-head"><h3 id="gk-sheet-title">Tankolás</h3><button type="button" class="gk-sheet-x" data-gk-sheet-close aria-label="Bezárás">✕</button></div>
+    <div class="gk-sheet-body">
+      <div class="gk-grid2">
+        <div><label for="gk-e-date">Dátum</label><input type="date" id="gk-e-date"></div>
+        <div><label for="gk-e-km" id="gk-e-km-label">Km óra állás</label><input type="number" id="gk-e-km" inputmode="numeric" min="0" placeholder="km"></div>
+      </div>
+      <div id="gk-e-km-hint" class="gk-e-hint"></div>
+      <div id="gk-e-fuel-fields">
+        <div class="gk-grid2">
+          <div><label for="gk-e-liter">Liter</label><input type="number" id="gk-e-liter" inputmode="decimal" step="0.01" min="0" placeholder="pl. 42,5"></div>
+          <div><label for="gk-e-fuel-amount">Fizetve (Ft)</label><input type="number" id="gk-e-fuel-amount" inputmode="numeric" min="0" placeholder="Ft"></div>
+        </div>
+        <div id="gk-e-unit" class="gk-e-unit"></div>
+        <label class="gk-switch"><input type="checkbox" id="gk-e-full" checked><span>⛽ Tele tank</span><small>Az átlagfogyasztás a tele tankolásokból számol.</small></label>
+      </div>
+      <div id="gk-e-service-fields" class="hidden">
+        <label>Típus</label>
+        <div class="gk-cat-chips" id="gk-e-cats"></div>
+        <div id="gk-e-muszaki-wrap" class="hidden"><label for="gk-e-muszaki">Új műszaki lejárat</label><input type="date" id="gk-e-muszaki"></div>
+        <label for="gk-e-desc">Jegyzet</label>
+        <input type="text" id="gk-e-desc" placeholder="pl. kötelező szerviz, olaj + szűrők">
+        <label for="gk-e-cost-amount">Összeg (Ft)</label>
+        <input type="number" id="gk-e-cost-amount" inputmode="numeric" min="0" placeholder="Ft">
+      </div>
+    </div>
+    <div class="gk-sheet-actions">
+      <button type="button" id="gk-e-delete" class="btn btn-ghost gk-e-del hidden">Törlés</button>
+      <button type="button" class="btn btn-ghost" data-gk-sheet-close>Mégse</button>
+      <button type="button" id="gk-e-save" class="btn btn-primary">Mentés</button>
+    </div>
   </div>
 </div>
 
@@ -6765,6 +6889,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     var box=document.getElementById('notes-reader-budget'); if(!box)return; var rows=(note&&note.budget&&Array.isArray(note.budget.items))?note.budget.items:[]; var enabled=!!(note&&note.budget&&note.budget.enabled);
     if(!enabled){box.classList.add('hidden');box.innerHTML='';return;} box.classList.remove('hidden'); var t=noteBudgetTotals(rows);
     var html='<h3>💰 Kiadás összesítő</h3>';
+    html+='<div class="nrb-sum"><div>Tervezett<b>'+moneyHu(t.planned)+'</b></div><div>Tényleges<b>'+(t.hasActual?moneyHu(t.actual):'—')+'</b></div><div class="'+(t.hasActual?(t.diff<0?'neg':'pos'):'')+'">Különbség<b>'+(t.hasActual?moneyHu(t.diff):'—')+'</b></div></div>';
+    if(rows.length)html+='<div class="nrb-count">'+rows.length+' tétel</div>';
     if(rows.length){html+='<table><thead><tr><th>Tétel</th><th>Tervezett</th><th>Tényleges</th></tr></thead><tbody>'; rows.forEach(function(r){html+='<tr><td>'+escapeHtml(r.name||'Névtelen tétel')+'</td><td>'+moneyHu(r.planned)+'</td><td>'+(r.actual!==''&&r.actual!=null?moneyHu(r.actual):'—')+'</td></tr>';}); html+='</tbody></table>';} else html+='<div style="color:#68798b">Még nincs felvett kiadás.</div>';
     html+='<div class="note-reader-budget-total"><span>Tervezett: <b>'+moneyHu(t.planned)+'</b></span>'+(t.hasActual?'<span>Tényleges: <b>'+moneyHu(t.actual)+'</b></span><span>Különbség: <b>'+moneyHu(t.diff)+'</b></span>':'')+'</div>'; box.innerHTML=html;
   }
@@ -10223,6 +10349,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     var elB = document.getElementById('gk-biztositas-status');
     elB.textContent = stB.text;
     elB.className = 'gk-oil-status level-' + stB.level;
+    if (typeof gkRenderOverview === 'function') gkRenderOverview();
   }
 
   function renderCostList() {
@@ -10444,7 +10571,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     }
   }
 
-  function showGkModal() { document.getElementById('gk-modal').classList.remove('hidden'); setTimeout(function () { document.getElementById('gk-f-rendszam').focus(); }, 50); }
+  function showGkModal() { document.getElementById('gk-modal').classList.remove('hidden'); if(!editingVehicleId) setTimeout(function () { document.getElementById('gk-f-rendszam').focus(); }, 80); }
   function hideGkModal() { document.getElementById('gk-modal').classList.add('hidden'); editingVehicleId = null; draftCosts = []; draftFuel = []; }
 
   function openNewVehicle() {
@@ -10468,14 +10595,14 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     document.getElementById('gk-f-fuel-full').checked = true;
     document.getElementById('gk-btn-delete').classList.add('hidden');
     collapseAllGkSections();
-    updateOilStatusDisplay(); renderCostList(); renderFuelList();
+    updateOilStatusDisplay(); renderCostList(); renderFuelList(); gkAfterOpen();
     showGkModal();
   }
   function openEditVehicle(id) {
     var v = vehicles.find(function (x) { return x.id === id; });
     if (!v) return;
     editingVehicleId = id;
-    draftCosts = (v.costs || []).map(function (c) { return { id: c.id, date: c.date, desc: c.desc, amount: c.amount }; });
+    draftCosts = (v.costs || []).map(function (c) { return { id: c.id, date: c.date, desc: c.desc, amount: c.amount, cat: c.cat || 'egyeb', km: c.km || 0 }; });
     draftFuel = (v.fuel || []).map(function (f) { return { id: f.id, date: f.date, km: f.km, liter: f.liter, amount: f.amount, fullTank:f.fullTank!==false }; });
     document.getElementById('gk-modal-title').textContent = 'Gépjármű szerkesztése';
     document.getElementById('gk-f-rendszam').value = v.rendszam || '';
@@ -10496,7 +10623,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     document.getElementById('gk-f-fuel-full').checked = true;
     document.getElementById('gk-btn-delete').classList.remove('hidden');
     collapseAllGkSections();
-    updateOilStatusDisplay(); renderCostList(); renderFuelList();
+    updateOilStatusDisplay(); renderCostList(); renderFuelList(); gkAfterOpen();
     showGkModal();
   }
   function saveVehicleForm() {
@@ -10529,6 +10656,180 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var r,n,i,a,
     saveVehicles(); renderVehicleList(); renderDashboard(); hideGkModal();
   }
   function deleteCurrentVehicle() { if (editingVehicleId) deleteVehicleById(editingVehicleId); }
+
+  /* ===== BETA7n13 · Gépjármű: áttekintés, napló, felviteli ablak ===== */
+  var GK_CATS=[['olaj','🛢️','Olajcsere'],['gumi','🛞','Gumi'],['fek','🛑','Fék'],['szerviz','🧰','Szerviz'],['javitas','🔧','Javítás'],['alkatresz','⚙️','Alkatrész'],['muszaki','📋','Műszaki'],['egyeb','📎','Egyéb']];
+  function gkCat(key){for(var i=0;i<GK_CATS.length;i++)if(GK_CATS[i][0]===key)return GK_CATS[i];return GK_CATS[GK_CATS.length-1];}
+  var gkLogFilter='all', gkSheetMode='fuel', gkSheetEditId=null, gkSheetCat='szerviz';
+  function gkFtUnit(liter,amount){var l=parseFloat(liter)||0,a=parseFloat(amount)||0;return (l>0&&a>0)?Math.round(a/l):0;}
+  function gkMaxFuelKm(excludeId,beforeDate){
+    var max=0;(draftFuel||[]).forEach(function(f){if(f.id===excludeId)return;if(beforeDate&&f.date&&f.date>beforeDate)return;var k=parseInt(f.km,10)||0;if(k>max)max=k;});return max;
+  }
+  function gkCurrentKm(){return parseInt(document.getElementById('gk-f-km').value,10)||0;}
+  function gkAfterOpen(){
+    gkLogFilter='all';
+    document.querySelectorAll('#gk-log-filter button').forEach(function(b){b.classList.toggle('active',b.getAttribute('data-gk-filter')==='all');});
+    var isNew=!editingVehicleId;
+    var ds=document.getElementById('gk-data-sec'); if(ds) ds.open=isNew;
+    var st=document.getElementById('gk-stats-sec'); if(st) st.open=false;
+    document.getElementById('gk-new-hint').classList.toggle('hidden',!isNew);
+    document.getElementById('gk-act-fuel').disabled=isNew; document.getElementById('gk-act-service').disabled=isNew;
+    document.getElementById('gk-modal-title').textContent=isNew?'Új gépjármű':(document.getElementById('gk-f-rendszam').value||'Gépjármű');
+    gkRenderOverview(); gkRenderLog(); gkRenderCatSummary();
+  }
+  function gkRenderOverview(){
+    var box=document.getElementById('gk-overview'); if(!box)return;
+    if(!editingVehicleId){box.innerHTML='';return;}
+    var km=gkCurrentKm(), oil=oilStatus(km,document.getElementById('gk-f-oil-km').value,document.getElementById('gk-f-oil-interval').value);
+    var mus=dateStatus(document.getElementById('gk-f-muszaki').value), bzt=dateStatus(document.getElementById('gk-f-biztositas').value,{recurring:true});
+    var cons=latestFuelConsumption(draftFuel||[]), year=String(new Date().getFullYear()), fuelY=0, servY=0;
+    (draftFuel||[]).forEach(function(f){if(String(f.date||'').indexOf(year)===0)fuelY+=parseInt(f.amount,10)||0;});
+    (draftCosts||[]).forEach(function(c){if(String(c.date||'').indexOf(year)===0)servY+=parseInt(c.amount,10)||0;});
+    function tile(lbl,val,sub,lvl){return '<div class="gk-ov-tile level-'+(lvl||'ok')+'"><small>'+lbl+'</small><b>'+escapeHtml(val)+'</b>'+(sub?'<span>'+escapeHtml(sub)+'</span>':'')+'</div>';}
+    var oilLeft=(parseInt(document.getElementById('gk-f-oil-km').value,10)||0)+(parseInt(document.getElementById('gk-f-oil-interval').value,10)||10000)-km;
+    box.innerHTML='<div class="gk-ov-head"><b>'+escapeHtml(document.getElementById('gk-f-rendszam').value||'—')+'</b><span>'+escapeHtml(document.getElementById('gk-f-tipus').value||'')+'</span></div>'
+      +tile('Km óra',fmtNum(km)+' km','')
+      +tile('Olajcsere',oilLeft<=0?'Esedékes!':fmtNum(oilLeft)+' km',oilLeft<=0?fmtNum(Math.abs(oilLeft))+' km-rel túllépve':'van hátra',oil.level)
+      +tile('Átlagfogyasztás',cons?fmtConsumption(cons.value)+' L/100':'—',cons?'utolsó '+fmtNum(cons.dist)+' km':'2 tele tank kell')
+      +tile('Idei költés',fmtNum(fuelY+servY)+' Ft','⛽ '+fmtNum(fuelY)+' · 🔧 '+fmtNum(servY))
+      +tile('Műszaki',document.getElementById('gk-f-muszaki').value||'—',mus.text,mus.level)
+      +tile('Biztosítás',document.getElementById('gk-f-biztositas').value||'—',bzt.text,bzt.level);
+  }
+  function gkRenderLog(){
+    var wrap=document.getElementById('gk-log'); if(!wrap)return;
+    var cmap=fuelConsumptionMap(draftFuel||[]), items=[];
+    if(gkLogFilter!=='service')(draftFuel||[]).forEach(function(f){items.push({t:'fuel',d:f.date||'',o:f});});
+    if(gkLogFilter!=='fuel')(draftCosts||[]).forEach(function(c){items.push({t:'service',d:c.date||'',o:c});});
+    items.sort(function(a,b){return b.d.localeCompare(a.d)||((parseInt(b.o.km,10)||0)-(parseInt(a.o.km,10)||0));});
+    wrap.innerHTML='';
+    if(!items.length){wrap.innerHTML='<div class="gk-log-empty">'+(editingVehicleId?'Még nincs bejegyzés. Használd a fenti ⛽ / 🔧 gombokat.':'Mentés után itt jelennek meg a tankolások és szerelések.')+'</div>';return;}
+    var months={};items.forEach(function(it){var k=it.d.slice(0,7)||'—';(months[k]=months[k]||[]).push(it);});
+    Object.keys(months).sort().reverse().forEach(function(k){
+      var list=months[k],sum=0;list.forEach(function(it){sum+=parseInt(it.o.amount,10)||0;});
+      var h=document.createElement('div');h.className='gk-log-month';h.innerHTML='<span>'+escapeHtml(k==='—'?'Dátum nélkül':monthLabel(k))+'</span><span>'+list.length+' tétel · '+fmtNum(sum)+' Ft</span>';wrap.appendChild(h);
+      list.forEach(function(it){
+        var o=it.o,row=document.createElement('button');row.type='button';row.className='gk-log-row '+it.t;
+        var main,sub,ic;
+        if(it.t==='fuel'){
+          ic='⛽'; var unit=gkFtUnit(o.liter,o.amount), c=cmap[o.id], hasKm=parseInt(o.km,10)>0;
+          main='Tankolás · '+(o.liter||0).toLocaleString('hu-HU')+' L'+(o.fullTank!==false?'<span class="gk-tag">TELE</span>':'<span class="gk-tag part">RÉSZ</span>')+(hasKm?'':'<span class="gk-tag warn">KM HIÁNYZIK</span>');
+          sub=[o.date||'—',hasKm?fmtNum(o.km)+' km':'',c?fmtConsumption(c.value)+' L/100km':'',unit?fmtNum(unit)+' Ft/L':''].filter(Boolean).join(' · ');
+        }else{
+          var cat=gkCat(o.cat||'egyeb'); ic=cat[1];
+          main=escapeHtml(cat[2]);
+          sub=[o.date||'—',(parseInt(o.km,10)>0?fmtNum(o.km)+' km':''),o.desc||''].filter(Boolean).map(escapeHtml).join(' · ');
+        }
+        row.innerHTML='<span class="gk-log-ic">'+ic+'</span><span class="gk-log-main"><b>'+main+'</b><span>'+(it.t==='fuel'?escapeHtml(sub):sub)+'</span></span><span class="gk-log-amt">'+fmtNum(o.amount||0)+' Ft</span>';
+        row.addEventListener('click',function(){gkOpenSheet(it.t,o.id);});
+        wrap.appendChild(row);
+      });
+    });
+  }
+  function gkRenderCatSummary(){
+    var box=document.getElementById('gk-cat-summary'); if(!box)return;
+    var year=String(new Date().getFullYear()), sums={}, any=false;
+    (draftCosts||[]).forEach(function(c){if(String(c.date||'').indexOf(year)!==0)return;var k=c.cat||'egyeb';sums[k]=(sums[k]||0)+(parseInt(c.amount,10)||0);any=true;});
+    if(!any){box.innerHTML='';return;}
+    var html='<div class="gk-stat-title">🔧 '+year+' – szerelés típusonként</div>';
+    GK_CATS.forEach(function(c){if(sums[c[0]]!=null)html+='<div class="gk-cat-row"><span>'+c[1]+' '+c[2]+'</span><b>'+fmtNum(sums[c[0]])+' Ft</b></div>';});
+    box.innerHTML=html;
+  }
+  function gkRefreshAll(){ renderCostList(); renderFuelList(); updateOilStatusDisplay(); gkRenderLog(); gkRenderCatSummary(); }
+  /* Bejegyzés azonnali mentése a már létező járműbe (nem kell a jármű Mentés gombja). */
+  function gkPersistEntries(){
+    if(!editingVehicleId)return;
+    var v=vehicles.find(function(x){return x.id===editingVehicleId;}); if(!v)return;
+    v.costs=draftCosts.slice(); v.fuel=draftFuel.slice();
+    var km=gkCurrentKm(); if(km>(parseInt(v.km,10)||0)) v.km=km;
+    var oilKm=parseInt(document.getElementById('gk-f-oil-km').value,10); if(!isNaN(oilKm)) v.oilKm=oilKm;
+    var mus=document.getElementById('gk-f-muszaki').value; if(mus) v.muszaki=mus;
+    v.updatedAt=new Date().toISOString();
+    saveVehicles(); renderVehicleList(); try{renderDashboard();}catch(e){}
+  }
+  function gkRenderCatChips(){
+    var box=document.getElementById('gk-e-cats'); box.innerHTML='';
+    GK_CATS.forEach(function(c){var b=document.createElement('button');b.type='button';b.textContent=c[1]+' '+c[2];b.classList.toggle('active',c[0]===gkSheetCat);
+      b.addEventListener('click',function(){gkSheetCat=c[0];gkRenderCatChips();gkSheetHints();});box.appendChild(b);});
+    document.getElementById('gk-e-muszaki-wrap').classList.toggle('hidden',gkSheetCat!=='muszaki');
+  }
+  function gkSheetHints(){
+    var kmEl=document.getElementById('gk-e-km'), hint=document.getElementById('gk-e-km-hint'), km=parseInt(kmEl.value,10)||0;
+    hint.className='gk-e-hint';
+    if(gkSheetMode==='fuel'){
+      var prev=gkMaxFuelKm(gkSheetEditId,document.getElementById('gk-e-date').value);
+      if(km&&prev&&km<prev){hint.textContent='⚠ Kisebb, mint az előző tankolásnál ('+fmtNum(prev)+' km).';hint.className='gk-e-hint warn';}
+      else if(km&&prev){hint.textContent='+'+fmtNum(km-prev)+' km az előző tankolás óta';}
+      else hint.textContent=prev?('Előző tankolás: '+fmtNum(prev)+' km'):'A km-állás kell az átlagfogyasztáshoz és az olajcseréhez.';
+      var unit=gkFtUnit(document.getElementById('gk-e-liter').value,document.getElementById('gk-e-fuel-amount').value);
+      document.getElementById('gk-e-unit').textContent=unit?('≈ '+fmtNum(unit)+' Ft / liter'):'';
+    }else{
+      hint.textContent=gkSheetCat==='olaj'?'Olajcsere: ez a km-állás lesz az új olajcsere-kiindulópont.':'Nem kötelező. Ha üres, nem rögzítünk km-t.';
+    }
+  }
+  function gkOpenSheet(mode,id){
+    if(!editingVehicleId){alert('Előbb mentsd el a járművet.');return;}
+    gkSheetMode=mode; gkSheetEditId=id||null;
+    var isFuel=mode==='fuel', o=null;
+    if(id) o=(isFuel?draftFuel:draftCosts).find(function(x){return x.id===id;});
+    document.getElementById('gk-sheet-title').textContent=(o?'Szerkesztés · ':'')+(isFuel?'⛽ Tankolás':'🔧 Szerelés / szerviz');
+    document.getElementById('gk-e-fuel-fields').classList.toggle('hidden',!isFuel);
+    document.getElementById('gk-e-service-fields').classList.toggle('hidden',isFuel);
+    document.getElementById('gk-e-km-label').textContent=isFuel?'Km óra állás':'Km óra (nem kötelező)';
+    document.getElementById('gk-e-date').value=(o&&o.date)||todayIso();
+    var cur=gkCurrentKm();
+    document.getElementById('gk-e-km').value=o&&parseInt(o.km,10)>0?parseInt(o.km,10):'';
+    document.getElementById('gk-e-km').placeholder=cur?('jelenleg '+fmtNum(cur)+' km'):'km';
+    if(isFuel){
+      document.getElementById('gk-e-liter').value=o?(o.liter||''):'';
+      document.getElementById('gk-e-fuel-amount').value=o?(o.amount||''):'';
+      document.getElementById('gk-e-full').checked=o?o.fullTank!==false:true;
+    }else{
+      gkSheetCat=o?(o.cat||'egyeb'):'szerviz';
+      document.getElementById('gk-e-desc').value=o?(o.desc||''):'';
+      document.getElementById('gk-e-cost-amount').value=o?(o.amount||''):'';
+      document.getElementById('gk-e-muszaki').value=document.getElementById('gk-f-muszaki').value||'';
+      gkRenderCatChips();
+    }
+    document.getElementById('gk-e-delete').classList.toggle('hidden',!o);
+    gkSheetHints();
+    var sh=document.getElementById('gk-entry-sheet'); sh.classList.remove('hidden'); sh.setAttribute('aria-hidden','false');
+    if(!o) setTimeout(function(){document.getElementById(isFuel?'gk-e-km':'gk-e-desc').focus();},120);
+  }
+  function gkCloseSheet(){var sh=document.getElementById('gk-entry-sheet');sh.classList.add('hidden');sh.setAttribute('aria-hidden','true');gkSheetEditId=null;}
+  function gkSaveSheet(){
+    var date=document.getElementById('gk-e-date').value||todayIso();
+    var km=parseInt(document.getElementById('gk-e-km').value,10); if(isNaN(km)||km<0)km=0;
+    if(gkSheetMode==='fuel'){
+      var liter=parseFloat(document.getElementById('gk-e-liter').value)||0, amount=parseInt(document.getElementById('gk-e-fuel-amount').value,10)||0, full=document.getElementById('gk-e-full').checked;
+      if(!km){alert('Add meg a km óra állást – ebből számol az átlagfogyasztás és az olajcsere.');return;}
+      if(!liter&&!amount){alert('Add meg a litert vagy az összeget.');return;}
+      var doSave=function(){
+        var rec={id:gkSheetEditId||uid('fu'),date:date,km:km,liter:liter,amount:amount,fullTank:full};
+        if(gkSheetEditId){draftFuel=draftFuel.map(function(x){return x.id===gkSheetEditId?rec:x;});}else draftFuel.push(rec);
+        var kmIn=document.getElementById('gk-f-km'); if(km>(parseInt(kmIn.value,10)||0)) kmIn.value=km;
+        gkCloseSheet(); gkRefreshAll(); gkPersistEntries();
+      };
+      var prev=gkMaxFuelKm(gkSheetEditId,date);
+      if(prev&&km<prev){showConfirm('A megadott km ('+fmtNum(km)+') kisebb, mint egy korábbi tankolásnál ('+fmtNum(prev)+'). Biztosan így mented?',doSave);return;}
+      doSave();
+    }else{
+      var desc=document.getElementById('gk-e-desc').value.trim(), amt=parseInt(document.getElementById('gk-e-cost-amount').value,10)||0;
+      if(!desc&&!amt){alert('Írj jegyzetet vagy adj meg összeget.');return;}
+      var rec2={id:gkSheetEditId||uid('co'),date:date,cat:gkSheetCat,km:km,desc:desc||gkCat(gkSheetCat)[2],amount:amt};
+      if(gkSheetEditId){draftCosts=draftCosts.map(function(x){return x.id===gkSheetEditId?rec2:x;});}else draftCosts.push(rec2);
+      if(gkSheetCat==='olaj'){ var ok=km||gkCurrentKm(); if(ok) document.getElementById('gk-f-oil-km').value=ok; }
+      if(gkSheetCat==='muszaki'){ var nm=document.getElementById('gk-e-muszaki').value; if(nm) document.getElementById('gk-f-muszaki').value=nm; }
+      if(km>gkCurrentKm()) document.getElementById('gk-f-km').value=km;
+      gkCloseSheet(); gkRefreshAll(); gkPersistEntries();
+    }
+  }
+  function gkDeleteSheetEntry(){
+    if(!gkSheetEditId)return; var id=gkSheetEditId, isFuel=gkSheetMode==='fuel';
+    showConfirm('Biztosan törlöd ezt a '+(isFuel?'tankolást':'szerelést')+'?',function(){
+      if(isFuel)draftFuel=draftFuel.filter(function(x){return x.id!==id;}); else draftCosts=draftCosts.filter(function(x){return x.id!==id;});
+      gkCloseSheet(); gkRefreshAll(); gkPersistEntries();
+    });
+  }
 
   // ============ RK LAP ============
   function deleteRkById(id) {
@@ -15490,6 +15791,15 @@ function renderDashboard() {
       document.getElementById('gk-btn-add-cost').addEventListener('click', addCostEntry);
       document.getElementById('gk-btn-add-fuel').addEventListener('click', addFuelEntry);
       wireCollapsibles();
+      // BETA7n13 · új gépjármű-felület
+      document.getElementById('gk-act-fuel').addEventListener('click',function(){gkOpenSheet('fuel');});
+      document.getElementById('gk-act-service').addEventListener('click',function(){gkOpenSheet('service');});
+      document.querySelectorAll('#gk-log-filter button').forEach(function(b){b.addEventListener('click',function(){gkLogFilter=b.getAttribute('data-gk-filter');document.querySelectorAll('#gk-log-filter button').forEach(function(x){x.classList.toggle('active',x===b);});gkRenderLog();});});
+      document.querySelectorAll('[data-gk-sheet-close]').forEach(function(b){b.addEventListener('click',gkCloseSheet);});
+      document.getElementById('gk-e-save').addEventListener('click',gkSaveSheet);
+      document.getElementById('gk-e-delete').addEventListener('click',gkDeleteSheetEntry);
+      ['gk-e-km','gk-e-liter','gk-e-fuel-amount','gk-e-date'].forEach(function(id){document.getElementById(id).addEventListener('input',gkSheetHints);});
+      ['gk-f-rendszam','gk-f-tipus'].forEach(function(id){document.getElementById(id).addEventListener('input',gkRenderOverview);});
     });
 
     safeWire('confirm-dialog', function () {
@@ -16029,9 +16339,11 @@ function renderDashboard() {
         </div>
         <button type="button" class="notes-reader-close" data-notes-reader-close aria-label="Bezárás">✕</button>
       </div>
-      <div id="notes-reader-body" class="notes-reader-body"></div>
-      <div id="notes-reader-checklist" class="notes-reader-checklist"></div>
-      <div id="notes-reader-budget" class="note-reader-budget hidden"></div>
+      <div class="notes-reader-scroll">
+        <div id="notes-reader-body" class="notes-reader-body"></div>
+        <div id="notes-reader-checklist" class="notes-reader-checklist"></div>
+        <div id="notes-reader-budget" class="note-reader-budget hidden"></div>
+      </div>
       <div class="notes-reader-actions">
         <button type="button" id="notes-reader-print" class="btn btn-ghost">🖨 PDF / Nyomtatás</button>
         <button type="button" id="notes-reader-edit" class="btn btn-primary">✏️ Szerkesztés</button>
